@@ -1,0 +1,19 @@
+Dependencies for Project 'Lab1', Target 'Target 1': (DO NOT MODIFY !)
+F (.\main.c)(0x660F389E)(-c --cpu Cortex-M4.fp -D__EVAL -g -O0 --apcs=interwork --split_sections -I ..\TivaWare_C_Series-2.2.0.295 -c99-I C:\Users\DAELN\Downloads\PedroGabriel_ELF74\Lab1\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="518" -D_RTE_ -DTM4C1294NCPDT-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x569E76DA)
+I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x569E76DA)
+I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x569E76DA)
+I (..\TivaWare_C_Series-2.2.0.295\inc/hw_ints.h)(0x660F329C)
+I (..\TivaWare_C_Series-2.2.0.295\inc/hw_memmap.h)(0x660F329C)
+I (..\TivaWare_C_Series-2.2.0.295\driverlib/debug.h)(0x660F328D)
+I (..\TivaWare_C_Series-2.2.0.295\driverlib/gpio.h)(0x660F328D)
+I (..\TivaWare_C_Series-2.2.0.295\driverlib/sysctl.h)(0x660F328D)
+I (..\TivaWare_C_Series-2.2.0.295\driverlib/systick.h)(0x660F328D)
+I (..\TivaWare_C_Series-2.2.0.295\driverlib/interrupt.h)(0x660F328D)
+I (..\TivaWare_C_Series-2.2.0.295\driverlib/pin_map.h)(0x660F328D)
+I (..\TivaWare_C_Series-2.2.0.295\driverlib/rom.h)(0x660F328D)
+I (..\TivaWare_C_Series-2.2.0.295\driverlib/rom_map.h)(0x660F328D)
+I (..\TivaWare_C_Series-2.2.0.295\driverlib/uart.h)(0x660F328D)
+F (.\startup_rvmdk.S)(0x660F3292)(--cpu Cortex-M4.fp --pd "__EVAL SETA 1" -g --apcs=interwork -I C:\Users\DAELN\Downloads\PedroGabriel_ELF74\Lab1\RTE-I C:\Keil_v5\ARM\PACK\ARM\CMSIS\4.5.0\CMSIS\Include-I C:\Keil_v5\ARM\PACK\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129--pd "__UVISION_VERSION SETA 518" --pd "_RTE_ SETA 1" --pd "TM4C1294NCPDT SETA 1"-o .\objects\startup_rvmdk.o --depend .\objects\startup_rvmdk.d)
+F (.\readme.txt)(0x660F38F6)()
+F (..\TivaWare_C_Series-2.2.0.295\driverlib\rvmdk\driverlib.lib)(0x660F328E)()
