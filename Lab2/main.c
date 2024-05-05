@@ -5,7 +5,6 @@ Desenvolvido para a placa EK-TM4C1294XL utilizando o SDK TivaWare no KEIL
 
 //TivaWare uC: Usado internamente para identificar o uC em alguns .h da TivaWare
 #define PART_TM4C1294NCPDT 1
-#define image_size_limit 65536
 
 #include <stdint.h>
 #include <stdio.h>
@@ -31,10 +30,10 @@ uint32_t SysClock;
 //Protótipos de funções criadas no programa, código depois do main
 void SysTickIntHandler(void);
 void UARTStringSend(const uint8_t *String, uint32_t tamanho);
-void UARTNumberSend(uint8_t number);
 void UART_Interruption_Handler(void);
 void SetupSystick(void);
 void SetupUart(void);
+void UARTNumberSend(uint8_t number);
 
 int main(void)
 {
@@ -46,14 +45,17 @@ int main(void)
   SetupUart();  
 	
 	// histogram array initialized with all values in 0
-	uint8_t histogram[256] = {0};
+	
+	// porque estático? Sem o estático não funciona
+	// Mesmo colocando a variavel uint16_t quando o valor estoura 255 ele está zerando, porque???
+	static uint16_t histogram[256] = {0}; 
 
 	// call function to image 0
 	uint32_t image_size = EightBitHistogram_C(width0, height0, p_start_image0, histogram);
 	
 	UARTStringSend("Image0\r\n", 8);
 	if(image_size!=0){
-		// send histogram data from image0
+		// send histogram data - image0
 		UARTStringSend("X,Y\r\n", 5);
 		for (uint16_t k=0; k<256; k++){
 			if(histogram[k]!=0){
@@ -72,7 +74,7 @@ int main(void)
 	
 	UARTStringSend("Image1\r\n", 8);
 	if(image_size!=0){
-		// send histogram data from image0
+		// send histogram data - image0
 		UARTStringSend("X,Y\r\n", 5);
 		for (uint16_t k=0; k<256; k++){
 			if(histogram[k]!=0){
@@ -88,12 +90,6 @@ int main(void)
 	
 	return 0;
 };
-
-//função de tratamento da interrupção do SysTick
-void SysTickIntHandler(void)
-{
-  SysTicks1ms++;
-}
 
 //função para enviar string pela uart
 void UARTStringSend(const uint8_t *String, uint32_t tamanho)
@@ -125,6 +121,12 @@ void UART_Interruption_Handler(void)
   rxbuffer[1]=rxbuffer[2];
   rxbuffer[2]=rxbuffer[3];
   rxbuffer[3]=last;
+}
+
+//função de tratamento da interrupção do SysTick
+void SysTickIntHandler(void)
+{
+  SysTicks1ms++;
 }
 
 //função para configurar e inicializar o periférico Systick a 1ms
