@@ -33,7 +33,7 @@ void UARTStringSend(const uint8_t *String, uint32_t tamanho);
 void UART_Interruption_Handler(void);
 void SetupSystick(void);
 void SetupUart(void);
-void UARTNumberSend(uint8_t number);
+void UARTNumberSend(uint16_t number);
 
 int main(void)
 {
@@ -45,15 +45,11 @@ int main(void)
   SetupUart();  
 	
 	// histogram array initialized with all values in 0
-	
-	// porque estático? Sem o estático não funciona
-	// Mesmo colocando a variavel uint16_t quando o valor estoura 255 ele está zerando, porque???
 	static uint16_t histogram[256] = {0}; 
 
 	// call function to image 0
-	uint32_t image_size = EightBitHistogram_C(width0, height0, p_start_image0, histogram);
+	uint16_t image_size = EightBitHistogram_C(width0, height0, p_start_image0, histogram);
 	
-	UARTStringSend("Image0\r\n", 8);
 	if(image_size!=0){
 		// send histogram data - image0
 		UARTStringSend("X,Y\r\n", 5);
@@ -72,7 +68,6 @@ int main(void)
 	// call function to image 1
 	image_size = EightBitHistogram_C(width1, height1, p_start_image1, histogram);
 	
-	UARTStringSend("Image1\r\n", 8);
 	if(image_size!=0){
 		// send histogram data - image0
 		UARTStringSend("X,Y\r\n", 5);
@@ -98,7 +93,7 @@ while (tamanho--) UARTCharPut(UART0_BASE, *String++);
 }
 
 //função para enviar numeros pela uart
-void UARTNumberSend(uint8_t number)
+void UARTNumberSend(uint16_t number)
 {
 	uint8_t buffer[4]; // buffer para armazenar a string
   buffer[0] = '0' + (number/100); // centenas
