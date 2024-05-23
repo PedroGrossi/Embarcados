@@ -1,0 +1,10 @@
+--cpu=Cortex-M4.fp.sp
+".\objects\main.o"
+".\objects\startup_rvmdk.o"
+".\objects\lcd2.o"
+".\objects\teclado.o"
+"..\TivaWare_C_Series-2.2.0.295\driverlib\rvmdk\driverlib.lib"
+--library_type=microlib --ro-base 0x00000000 --entry 0x00000000 --rw-base 0x20000000 --entry Reset_Handler --first __Vectors --strict
+--entry Reset_Handler --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\Listings\Display_lcd.map" -o .\Objects\Display_lcd.axf

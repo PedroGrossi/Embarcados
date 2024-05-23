@@ -46,6 +46,7 @@ int main(void)
 	
 	// histogram array initialized with all values in 0
 	static uint16_t histogram[256] = {0}; 
+	// Estudar como aumentar o tamanho da pilha de variaveis locais -> startup
 
 	// call function to image 0
 	uint16_t image_size = EightBitHistogram_C(width0, height0, p_start_image0, histogram);
