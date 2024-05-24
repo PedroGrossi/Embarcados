@@ -19,7 +19,7 @@
 #include <stdbool.h>
 #include "inc/hw_memmap.h"
 #include "driverlib/gpio.h"
-//#include "tm4c1294ncpdt.h"
+
 
 void SysTick_Wait1ms(uint32_t data);
 void SysTick_Wait1us(uint32_t data);
@@ -37,14 +37,16 @@ void LCD_Init(void)
 
 void LCD_Command(uint32_t data)
 {
-  GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_0, data); //???
-	//PortM_Output(data);
+  GPIOPinWrite(GPIO_PORTM_BASE,
+	             GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2,
+	             data);
 }
 
 void LCD_Data(uint32_t data)
 {
-  GPIOPinWrite(GPIO_PORTK_BASE, GPIO_PIN_1, data); //???
-	//PortK_Output(data);
+  GPIOPinWrite(GPIO_PORTK_BASE, 
+	             GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7,
+               data);
 }	
 
 void LCD_Escreve_Inst(uint32_t dado)

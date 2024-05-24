@@ -14,9 +14,7 @@
 #include <stdbool.h>
 #include "inc/hw_memmap.h"
 #include "driverlib/gpio.h"
-//#include "tm4c1294ncpdt.h"
 
-int PortL_Input(void);
 
 // -------------------------------------------------------------------------------
 // Função AtivaColuna
@@ -28,21 +26,25 @@ void AtivaColuna(uint8_t coluna)
     switch(coluna)
 		{
 			case 1:
-				GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_4, 0xE0); //Zerar PM4
-				break;
+				//Zerar PM4 0b1110.0000
+				GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
+			  break;
 			case 2:
-				GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_5, 0xD0); //Zerar PM5
+				//Zerar PM5 0b1101.0000
+				GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_PIN_4 | GPIO_PIN_6 | GPIO_PIN_7);
 				break;
 			case 3:
-				GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_6, 0xB0); //Zerar PM6
+				//Zerar PM6 0b1011.0000
+				GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_7);
 				break;
 			case 4:
-				GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_7, 0x70); //Zerar PM7
+				//Zerar PM7 0b0111.0000
+				GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6);
 				break;
 			default:
-				GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_0, 0xF0); //??? o pino tem que ser diferente
-				//PortM_Output2(0xF0);
-				break;				
+				//4bit high 0b1111.0000
+				GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
+			  break;				
 		}
 }
 
@@ -54,7 +56,7 @@ void AtivaColuna(uint8_t coluna)
 uint8_t LeLinha(void)
 {
 	  uint32_t portL_input;
-		portL_input = PortL_Input();
+		portL_input = GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3);
 	  switch(portL_input)
 		{
 			case 0x0E:  //Port L0

@@ -4,13 +4,26 @@ Component: ARM Compiler 5.06 update 7 (build 960) Tool: armlink [4d3601]
 
 Section Cross References
 
-    main.o(i.PortL_Input) refers to gpio.o(i.GPIOPinRead) for GPIOPinRead
-    main.o(i.PortL_Input) refers to main.o(.data) for SysTicks1ms
-    main.o(i.SetupGPIOs) refers to sysctl.o(i.SysCtlPeripheralEnable) for SysCtlPeripheralEnable
-    main.o(i.SetupGPIOs) refers to sysctl.o(i.SysCtlPeripheralReady) for SysCtlPeripheralReady
-    main.o(i.SetupGPIOs) refers to gpio.o(i.GPIOPinTypeGPIOOutput) for GPIOPinTypeGPIOOutput
-    main.o(i.SetupGPIOs) refers to gpio.o(i.GPIOPinTypeGPIOInput) for GPIOPinTypeGPIOInput
-    main.o(i.SetupGPIOs) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    main.o(i.PortJ_Input) refers to gpio.o(i.GPIOPinRead) for GPIOPinRead
+    main.o(i.PortJ_Input) refers to main.o(.data) for SysTicks1ms
+    main.o(i.PortJ_config) refers to sysctl.o(i.SysCtlPeripheralEnable) for SysCtlPeripheralEnable
+    main.o(i.PortJ_config) refers to sysctl.o(i.SysCtlPeripheralReady) for SysCtlPeripheralReady
+    main.o(i.PortJ_config) refers to gpio.o(i.GPIOPinTypeGPIOOutput) for GPIOPinTypeGPIOOutput
+    main.o(i.PortK_config) refers to sysctl.o(i.SysCtlPeripheralEnable) for SysCtlPeripheralEnable
+    main.o(i.PortK_config) refers to sysctl.o(i.SysCtlPeripheralReady) for SysCtlPeripheralReady
+    main.o(i.PortK_config) refers to gpio.o(i.GPIOPinTypeGPIOOutput) for GPIOPinTypeGPIOOutput
+    main.o(i.PortL_config) refers to sysctl.o(i.SysCtlPeripheralEnable) for SysCtlPeripheralEnable
+    main.o(i.PortL_config) refers to sysctl.o(i.SysCtlPeripheralReady) for SysCtlPeripheralReady
+    main.o(i.PortL_config) refers to gpio.o(i.GPIOPinTypeGPIOInput) for GPIOPinTypeGPIOInput
+    main.o(i.PortL_config) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    main.o(i.PortM_config) refers to sysctl.o(i.SysCtlPeripheralEnable) for SysCtlPeripheralEnable
+    main.o(i.PortM_config) refers to sysctl.o(i.SysCtlPeripheralReady) for SysCtlPeripheralReady
+    main.o(i.PortM_config) refers to gpio.o(i.GPIOPinTypeGPIOOutput) for GPIOPinTypeGPIOOutput
+    main.o(i.PortM_config) refers to gpio.o(i.GPIOPinTypeGPIOInput) for GPIOPinTypeGPIOInput
+    main.o(i.PortM_config) refers to gpio.o(i.GPIOPadConfigSet) for GPIOPadConfigSet
+    main.o(i.PortN_config) refers to sysctl.o(i.SysCtlPeripheralEnable) for SysCtlPeripheralEnable
+    main.o(i.PortN_config) refers to sysctl.o(i.SysCtlPeripheralReady) for SysCtlPeripheralReady
+    main.o(i.PortN_config) refers to gpio.o(i.GPIOPinTypeGPIOOutput) for GPIOPinTypeGPIOOutput
     main.o(i.SetupSystick) refers to systick.o(i.SysTickDisable) for SysTickDisable
     main.o(i.SetupSystick) refers to systick.o(i.SysTickPeriodSet) for SysTickPeriodSet
     main.o(i.SetupSystick) refers to systick.o(i.SysTickIntRegister) for SysTickIntRegister
@@ -23,13 +36,20 @@ Section Cross References
     main.o(i.SysTick_Wait1us) refers to main.o(.data) for SysTicks1ms
     main.o(i.main) refers to sysctl.o(i.SysCtlClockFreqSet) for SysCtlClockFreqSet
     main.o(i.main) refers to main.o(i.SetupSystick) for SetupSystick
-    main.o(i.main) refers to main.o(i.SetupGPIOs) for SetupGPIOs
+    main.o(i.main) refers to main.o(i.PortJ_config) for PortJ_config
+    main.o(i.main) refers to main.o(i.PortK_config) for PortK_config
+    main.o(i.main) refers to main.o(i.PortL_config) for PortL_config
+    main.o(i.main) refers to main.o(i.PortM_config) for PortM_config
+    main.o(i.main) refers to main.o(i.PortN_config) for PortN_config
     main.o(i.main) refers to lcd2.o(i.LCD_Init) for LCD_Init
     main.o(i.main) refers to lcd2.o(i.LCD_EspecialChar) for LCD_EspecialChar
-    main.o(i.main) refers to printfb.o(i.__0sprintf$bare) for __2sprintf
+    main.o(i.main) refers to printf5.o(i.__0sprintf$5) for __2sprintf
     main.o(i.main) refers to lcd2.o(i.LCD_Escreve_Inst) for LCD_Escreve_Inst
     main.o(i.main) refers to lcd2.o(i.LCD_Escreve_Dado) for LCD_Escreve_Dado
     main.o(i.main) refers to strlen.o(.text) for strlen
+    main.o(i.main) refers to teclado.o(i.VarreTeclado) for VarreTeclado
+    main.o(i.main) refers to gpio.o(i.GPIOPinWrite) for GPIOPinWrite
+    main.o(i.main) refers to main.o(i.PortJ_Input) for PortJ_Input
     main.o(i.main) refers to main.o(.data) for SysClock
     startup_rvmdk.o(RESET) refers to startup_rvmdk.o(STACK) for StackMem
     startup_rvmdk.o(RESET) refers to entry.o(.ARM.Collect$$$$00000000) for __main
@@ -48,7 +68,7 @@ Section Cross References
     lcd2.o(i.LCD_Init) refers to lcd2.o(i.LCD_Escreve_Inst) for LCD_Escreve_Inst
     lcd2.o(i.LCD_Init) refers to main.o(i.SysTick_Wait1us) for SysTick_Wait1us
     teclado.o(i.AtivaColuna) refers to gpio.o(i.GPIOPinWrite) for GPIOPinWrite
-    teclado.o(i.LeLinha) refers to main.o(i.PortL_Input) for PortL_Input
+    teclado.o(i.LeLinha) refers to gpio.o(i.GPIOPinRead) for GPIOPinRead
     teclado.o(i.VarreTeclado) refers to teclado.o(i.AtivaColuna) for AtivaColuna
     teclado.o(i.VarreTeclado) refers to teclado.o(i.LeLinha) for LeLinha
     gpio.o(i.GPIOIntRegister) refers to gpio.o(i._GPIOIntNumberGet) for _GPIOIntNumberGet
@@ -416,12 +436,8 @@ Section Cross References
 
 Removing Unused input sections from the image.
 
-    Removing main.o(i.PortL_Input), (96 bytes).
     Removing startup_rvmdk.o(HEAP), (0 bytes).
     Removing startup_rvmdk.o(.text), (0 bytes).
-    Removing teclado.o(i.AtivaColuna), (92 bytes).
-    Removing teclado.o(i.LeLinha), (44 bytes).
-    Removing teclado.o(i.VarreTeclado), (214 bytes).
     Removing gpio.o(i.GPIOADCTriggerDisable), (14 bytes).
     Removing gpio.o(i.GPIOADCTriggerEnable), (12 bytes).
     Removing gpio.o(i.GPIODMATriggerDisable), (14 bytes).
@@ -439,7 +455,6 @@ Removing Unused input sections from the image.
     Removing gpio.o(i.GPIOIntUnregisterPin), (26 bytes).
     Removing gpio.o(i.GPIOPadConfigGet), (248 bytes).
     Removing gpio.o(i.GPIOPinConfigure), (68 bytes).
-    Removing gpio.o(i.GPIOPinRead), (6 bytes).
     Removing gpio.o(i.GPIOPinTypeADC), (28 bytes).
     Removing gpio.o(i.GPIOPinTypeCAN), (28 bytes).
     Removing gpio.o(i.GPIOPinTypeComparator), (28 bytes).
@@ -550,7 +565,7 @@ Removing Unused input sections from the image.
     Removing cdrcmple.o(.text), (48 bytes).
     Removing depilogue.o(.text), (186 bytes).
 
-133 unused section(s) (total 6612 bytes) removed from the image.
+128 unused section(s) (total 6160 bytes) removed from the image.
 
 ==============================================================================
 
@@ -564,35 +579,36 @@ Image Symbol Table
     ../clib/../cmprslib/zerorunl.c           0x00000000   Number         0  __dczerorl.o ABSOLUTE
     ../clib/microlib/division.c              0x00000000   Number         0  uidiv.o ABSOLUTE
     ../clib/microlib/division.c              0x00000000   Number         0  uldiv.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry12b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry12a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
-    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9b.o ABSOLUTE
     ../clib/microlib/init/entry.s            0x00000000   Number         0  entry9a.o ABSOLUTE
-    ../clib/microlib/longlong.c              0x00000000   Number         0  llshl.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry8a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry7a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry5.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry2.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry10b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry11b.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry12a.o ABSOLUTE
+    ../clib/microlib/init/entry.s            0x00000000   Number         0  entry12b.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llsshr.o ABSOLUTE
     ../clib/microlib/longlong.c              0x00000000   Number         0  llushr.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf6.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf5.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf4.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf3.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf2.o ABSOLUTE
+    ../clib/microlib/longlong.c              0x00000000   Number         0  llshl.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfb.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf1.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf0.o ABSOLUTE
-    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf7.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printfa.o ABSOLUTE
     ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf8.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf0.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf1.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf2.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf3.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf4.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf5.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf6.o ABSOLUTE
+    ../clib/microlib/printf/printf.c         0x00000000   Number         0  printf7.o ABSOLUTE
+    ../clib/microlib/printf/stubs.s          0x00000000   Number         0  stubs.o ABSOLUTE
     ../clib/microlib/stdio/fputc.c           0x00000000   Number         0  fputc.o ABSOLUTE
     ../clib/microlib/stdio/semi.s            0x00000000   Number         0  semi.o ABSOLUTE
     ../clib/microlib/stdio/streams.c         0x00000000   Number         0  stdout.o ABSOLUTE
@@ -635,47 +651,59 @@ Image Symbol Table
     .ARM.Collect$$$$00002712                 0x00000230   Section        4  entry2.o(.ARM.Collect$$$$00002712)
     __lit__00000000                          0x00000230   Data           4  entry2.o(.ARM.Collect$$$$00002712)
     .text                                    0x00000234   Section        0  strlen.o(.text)
-    .text                                    0x00000244   Section       36  init.o(.text)
-    .text                                    0x00000268   Section        0  __dczerorl.o(.text)
-    i.GPIODirModeSet                         0x000002a2   Section        0  gpio.o(i.GPIODirModeSet)
-    i.GPIOPadConfigSet                       0x000002cc   Section        0  gpio.o(i.GPIOPadConfigSet)
-    i.GPIOPinTypeGPIOInput                   0x0000043c   Section        0  gpio.o(i.GPIOPinTypeGPIOInput)
-    i.GPIOPinTypeGPIOOutput                  0x00000458   Section        0  gpio.o(i.GPIOPinTypeGPIOOutput)
-    i.GPIOPinWrite                           0x00000474   Section        0  gpio.o(i.GPIOPinWrite)
-    i.IntRegister                            0x0000047c   Section        0  interrupt.o(i.IntRegister)
-    i.LCD_Command                            0x000004b0   Section        0  lcd2.o(i.LCD_Command)
-    i.LCD_Data                               0x000004c4   Section        0  lcd2.o(i.LCD_Data)
-    i.LCD_Escreve_Dado                       0x000004d8   Section        0  lcd2.o(i.LCD_Escreve_Dado)
-    i.LCD_Escreve_Inst                       0x00000510   Section        0  lcd2.o(i.LCD_Escreve_Inst)
-    i.LCD_EspecialChar                       0x00000540   Section        0  lcd2.o(i.LCD_EspecialChar)
-    i.LCD_Init                               0x000006f4   Section        0  lcd2.o(i.LCD_Init)
-    i.SetupGPIOs                             0x00000724   Section        0  main.o(i.SetupGPIOs)
-    i.SetupSystick                           0x000007b0   Section        0  main.o(i.SetupSystick)
-    i.SysCtlClockFreqSet                     0x000007e0   Section        0  sysctl.o(i.SysCtlClockFreqSet)
-    i.SysCtlPeripheralEnable                 0x00000ac4   Section        0  sysctl.o(i.SysCtlPeripheralEnable)
-    i.SysCtlPeripheralReady                  0x00000aec   Section        0  sysctl.o(i.SysCtlPeripheralReady)
-    i.SysTickDisable                         0x00000b18   Section        0  systick.o(i.SysTickDisable)
-    i.SysTickEnable                          0x00000b26   Section        0  systick.o(i.SysTickEnable)
-    i.SysTickIntEnable                       0x00000b34   Section        0  systick.o(i.SysTickIntEnable)
-    i.SysTickIntHandler                      0x00000b44   Section        0  main.o(i.SysTickIntHandler)
-    i.SysTickIntRegister                     0x00000b54   Section        0  systick.o(i.SysTickIntRegister)
-    i.SysTickPeriodSet                       0x00000b6c   Section        0  systick.o(i.SysTickPeriodSet)
-    i.SysTick_Wait1ms                        0x00000b78   Section        0  main.o(i.SysTick_Wait1ms)
-    i.SysTick_Wait1us                        0x00000b9c   Section        0  main.o(i.SysTick_Wait1us)
-    i.__0sprintf$bare                        0x00000bc0   Section        0  printfb.o(i.__0sprintf$bare)
-    i.__scatterload_copy                     0x00000be4   Section       14  handlers.o(i.__scatterload_copy)
-    i.__scatterload_null                     0x00000bf2   Section        2  handlers.o(i.__scatterload_null)
-    i.__scatterload_zeroinit                 0x00000bf4   Section       14  handlers.o(i.__scatterload_zeroinit)
-    i._printf_core                           0x00000c02   Section        0  printfb.o(i._printf_core)
-    _printf_core                             0x00000c03   Thumb Code    34  printfb.o(i._printf_core)
-    i._sputc                                 0x00000c24   Section        0  printfb.o(i._sputc)
-    _sputc                                   0x00000c25   Thumb Code    10  printfb.o(i._sputc)
-    i.main                                   0x00000c30   Section        0  main.o(i.main)
-    .constdata                               0x00000cb0   Section      596  sysctl.o(.constdata)
-    g_pui32VCOFrequencies                    0x00000cb0   Data           8  sysctl.o(.constdata)
-    g_pui32Xtals                             0x00000cb8   Data         108  sysctl.o(.constdata)
-    g_pppui32XTALtoVCO                       0x00000d24   Data         432  sysctl.o(.constdata)
-    g_sXTALtoMEMTIM                          0x00000ed4   Data          48  sysctl.o(.constdata)
+    .text                                    0x00000242   Section        0  uldiv.o(.text)
+    .text                                    0x000002a4   Section       36  init.o(.text)
+    .text                                    0x000002c8   Section        0  llshl.o(.text)
+    .text                                    0x000002e6   Section        0  llushr.o(.text)
+    .text                                    0x00000306   Section        0  __dczerorl.o(.text)
+    i.AtivaColuna                            0x00000340   Section        0  teclado.o(i.AtivaColuna)
+    i.GPIODirModeSet                         0x0000039c   Section        0  gpio.o(i.GPIODirModeSet)
+    i.GPIOPadConfigSet                       0x000003c4   Section        0  gpio.o(i.GPIOPadConfigSet)
+    i.GPIOPinRead                            0x00000534   Section        0  gpio.o(i.GPIOPinRead)
+    i.GPIOPinTypeGPIOInput                   0x0000053a   Section        0  gpio.o(i.GPIOPinTypeGPIOInput)
+    i.GPIOPinTypeGPIOOutput                  0x00000556   Section        0  gpio.o(i.GPIOPinTypeGPIOOutput)
+    i.GPIOPinWrite                           0x00000572   Section        0  gpio.o(i.GPIOPinWrite)
+    i.IntRegister                            0x00000578   Section        0  interrupt.o(i.IntRegister)
+    i.LCD_Command                            0x000005ac   Section        0  lcd2.o(i.LCD_Command)
+    i.LCD_Data                               0x000005c0   Section        0  lcd2.o(i.LCD_Data)
+    i.LCD_Escreve_Dado                       0x000005d4   Section        0  lcd2.o(i.LCD_Escreve_Dado)
+    i.LCD_Escreve_Inst                       0x0000060c   Section        0  lcd2.o(i.LCD_Escreve_Inst)
+    i.LCD_EspecialChar                       0x0000063c   Section        0  lcd2.o(i.LCD_EspecialChar)
+    i.LCD_Init                               0x000007f0   Section        0  lcd2.o(i.LCD_Init)
+    i.LeLinha                                0x00000820   Section        0  teclado.o(i.LeLinha)
+    i.PortJ_Input                            0x00000854   Section        0  main.o(i.PortJ_Input)
+    i.PortJ_config                           0x000008f4   Section        0  main.o(i.PortJ_config)
+    i.PortK_config                           0x0000091c   Section        0  main.o(i.PortK_config)
+    i.PortL_config                           0x00000944   Section        0  main.o(i.PortL_config)
+    i.PortM_config                           0x00000978   Section        0  main.o(i.PortM_config)
+    i.PortN_config                           0x000009b4   Section        0  main.o(i.PortN_config)
+    i.SetupSystick                           0x000009dc   Section        0  main.o(i.SetupSystick)
+    i.SysCtlClockFreqSet                     0x00000a0c   Section        0  sysctl.o(i.SysCtlClockFreqSet)
+    i.SysCtlPeripheralEnable                 0x00000cf0   Section        0  sysctl.o(i.SysCtlPeripheralEnable)
+    i.SysCtlPeripheralReady                  0x00000d18   Section        0  sysctl.o(i.SysCtlPeripheralReady)
+    i.SysTickDisable                         0x00000d44   Section        0  systick.o(i.SysTickDisable)
+    i.SysTickEnable                          0x00000d52   Section        0  systick.o(i.SysTickEnable)
+    i.SysTickIntEnable                       0x00000d60   Section        0  systick.o(i.SysTickIntEnable)
+    i.SysTickIntHandler                      0x00000d70   Section        0  main.o(i.SysTickIntHandler)
+    i.SysTickIntRegister                     0x00000d80   Section        0  systick.o(i.SysTickIntRegister)
+    i.SysTickPeriodSet                       0x00000d98   Section        0  systick.o(i.SysTickPeriodSet)
+    i.SysTick_Wait1ms                        0x00000da4   Section        0  main.o(i.SysTick_Wait1ms)
+    i.SysTick_Wait1us                        0x00000dc8   Section        0  main.o(i.SysTick_Wait1us)
+    i.VarreTeclado                           0x00000dec   Section        0  teclado.o(i.VarreTeclado)
+    i.__0sprintf$5                           0x00000ec4   Section        0  printf5.o(i.__0sprintf$5)
+    i.__scatterload_copy                     0x00000eec   Section       14  handlers.o(i.__scatterload_copy)
+    i.__scatterload_null                     0x00000efa   Section        2  handlers.o(i.__scatterload_null)
+    i.__scatterload_zeroinit                 0x00000efc   Section       14  handlers.o(i.__scatterload_zeroinit)
+    i._printf_core                           0x00000f0c   Section        0  printf5.o(i._printf_core)
+    _printf_core                             0x00000f0d   Thumb Code   660  printf5.o(i._printf_core)
+    i._sputc                                 0x000011cc   Section        0  printf5.o(i._sputc)
+    _sputc                                   0x000011cd   Thumb Code    10  printf5.o(i._sputc)
+    i.main                                   0x000011d8   Section        0  main.o(i.main)
+    .constdata                               0x00001360   Section      596  sysctl.o(.constdata)
+    g_pui32VCOFrequencies                    0x00001360   Data           8  sysctl.o(.constdata)
+    g_pui32Xtals                             0x00001368   Data         108  sysctl.o(.constdata)
+    g_pppui32XTALtoVCO                       0x000013d4   Data         432  sysctl.o(.constdata)
+    g_sXTALtoMEMTIM                          0x00001584   Data          48  sysctl.o(.constdata)
     .data                                    0x20000000   Section       12  main.o(.data)
     SysTicks1ms                              0x20000000   Data           4  main.o(.data)
     vtable                                   0x20000400   Section      620  interrupt.o(vtable)
@@ -690,6 +718,47 @@ Image Symbol Table
     BuildAttributes$$THM_ISAv4$E$P$D$K$B$S$7EM$VFPi3$EXTD16$VFPS$VFMA$PE$A:L22UL41UL21$X:L11$S22US41US21$IEEE1$IW$USESV6$~STKCKD$USESV7$~SHL$OTIME$ROPI$EBA8$MICROLIB$REQ8$PRES8$EABIv2 0x00000000   Number         0  anon$$obj.o ABSOLUTE
     __ARM_use_no_argv                        0x00000000   Number         0  main.o ABSOLUTE
     __Vectors                                0x00000000   Data           0  startup_rvmdk.o(RESET)
+    _printf_a                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_c                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_charcount                        0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_d                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_e                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_f                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_flags                            0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_fp_dec                           0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_fp_hex                           0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_g                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_i                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_int_dec                          0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_l                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_lc                               0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_ll                               0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_lld                              0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_lli                              0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_llo                              0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_llu                              0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_llx                              0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_longlong_dec                     0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_longlong_hex                     0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_longlong_oct                     0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_ls                               0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_mbtowc                           0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_n                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_o                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_p                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_percent                          0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_pre_padding                      0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_return_value                     0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_s                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_sizespec                         0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_str                              0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_truncate_signed                  0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_truncate_unsigned                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_u                                0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_wc                               0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_wctomb                           0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_widthprec                        0x00000000   Number         0  stubs.o ABSOLUTE
+    _printf_x                                0x00000000   Number         0  stubs.o ABSOLUTE
     __arm_fini_                               - Undefined Weak Reference
     __cpp_initialize__aeabi_                  - Undefined Weak Reference
     __cxa_finalize                            - Undefined Weak Reference
@@ -707,44 +776,58 @@ Image Symbol Table
     __rt_final_cpp                           0x00000231   Thumb Code     0  entry10a.o(.ARM.Collect$$$$0000000F)
     __rt_final_exit                          0x00000231   Thumb Code     0  entry11a.o(.ARM.Collect$$$$00000011)
     strlen                                   0x00000235   Thumb Code    14  strlen.o(.text)
-    __scatterload                            0x00000245   Thumb Code    28  init.o(.text)
-    __scatterload_rt2                        0x00000245   Thumb Code     0  init.o(.text)
-    __decompress                             0x00000269   Thumb Code     0  __dczerorl.o(.text)
-    __decompress0                            0x00000269   Thumb Code    58  __dczerorl.o(.text)
-    GPIODirModeSet                           0x000002a3   Thumb Code    40  gpio.o(i.GPIODirModeSet)
-    GPIOPadConfigSet                         0x000002cd   Thumb Code   354  gpio.o(i.GPIOPadConfigSet)
-    GPIOPinTypeGPIOInput                     0x0000043d   Thumb Code    28  gpio.o(i.GPIOPinTypeGPIOInput)
-    GPIOPinTypeGPIOOutput                    0x00000459   Thumb Code    28  gpio.o(i.GPIOPinTypeGPIOOutput)
-    GPIOPinWrite                             0x00000475   Thumb Code     6  gpio.o(i.GPIOPinWrite)
-    IntRegister                              0x0000047d   Thumb Code    44  interrupt.o(i.IntRegister)
-    LCD_Command                              0x000004b1   Thumb Code    16  lcd2.o(i.LCD_Command)
-    LCD_Data                                 0x000004c5   Thumb Code    16  lcd2.o(i.LCD_Data)
-    LCD_Escreve_Dado                         0x000004d9   Thumb Code    56  lcd2.o(i.LCD_Escreve_Dado)
-    LCD_Escreve_Inst                         0x00000511   Thumb Code    48  lcd2.o(i.LCD_Escreve_Inst)
-    LCD_EspecialChar                         0x00000541   Thumb Code   436  lcd2.o(i.LCD_EspecialChar)
-    LCD_Init                                 0x000006f5   Thumb Code    48  lcd2.o(i.LCD_Init)
-    SetupGPIOs                               0x00000725   Thumb Code   122  main.o(i.SetupGPIOs)
-    SetupSystick                             0x000007b1   Thumb Code    34  main.o(i.SetupSystick)
-    SysCtlClockFreqSet                       0x000007e1   Thumb Code   700  sysctl.o(i.SysCtlClockFreqSet)
-    SysCtlPeripheralEnable                   0x00000ac5   Thumb Code    36  sysctl.o(i.SysCtlPeripheralEnable)
-    SysCtlPeripheralReady                    0x00000aed   Thumb Code    40  sysctl.o(i.SysCtlPeripheralReady)
-    SysTickDisable                           0x00000b19   Thumb Code    14  systick.o(i.SysTickDisable)
-    SysTickEnable                            0x00000b27   Thumb Code    14  systick.o(i.SysTickEnable)
-    SysTickIntEnable                         0x00000b35   Thumb Code    14  systick.o(i.SysTickIntEnable)
-    SysTickIntHandler                        0x00000b45   Thumb Code    12  main.o(i.SysTickIntHandler)
-    SysTickIntRegister                       0x00000b55   Thumb Code    24  systick.o(i.SysTickIntRegister)
-    SysTickPeriodSet                         0x00000b6d   Thumb Code    10  systick.o(i.SysTickPeriodSet)
-    SysTick_Wait1ms                          0x00000b79   Thumb Code    32  main.o(i.SysTick_Wait1ms)
-    SysTick_Wait1us                          0x00000b9d   Thumb Code    30  main.o(i.SysTick_Wait1us)
-    __0sprintf$bare                          0x00000bc1   Thumb Code    32  printfb.o(i.__0sprintf$bare)
-    __1sprintf$bare                          0x00000bc1   Thumb Code     0  printfb.o(i.__0sprintf$bare)
-    __2sprintf                               0x00000bc1   Thumb Code     0  printfb.o(i.__0sprintf$bare)
-    __scatterload_copy                       0x00000be5   Thumb Code    14  handlers.o(i.__scatterload_copy)
-    __scatterload_null                       0x00000bf3   Thumb Code     2  handlers.o(i.__scatterload_null)
-    __scatterload_zeroinit                   0x00000bf5   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
-    main                                     0x00000c31   Thumb Code    98  main.o(i.main)
-    Region$$Table$$Base                      0x00000f04   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x00000f24   Number         0  anon$$obj.o(Region$$Table)
+    __aeabi_uldivmod                         0x00000243   Thumb Code    98  uldiv.o(.text)
+    __scatterload                            0x000002a5   Thumb Code    28  init.o(.text)
+    __scatterload_rt2                        0x000002a5   Thumb Code     0  init.o(.text)
+    __aeabi_llsl                             0x000002c9   Thumb Code    30  llshl.o(.text)
+    _ll_shift_l                              0x000002c9   Thumb Code     0  llshl.o(.text)
+    __aeabi_llsr                             0x000002e7   Thumb Code    32  llushr.o(.text)
+    _ll_ushift_r                             0x000002e7   Thumb Code     0  llushr.o(.text)
+    __decompress                             0x00000307   Thumb Code     0  __dczerorl.o(.text)
+    __decompress0                            0x00000307   Thumb Code    58  __dczerorl.o(.text)
+    AtivaColuna                              0x00000341   Thumb Code    86  teclado.o(i.AtivaColuna)
+    GPIODirModeSet                           0x0000039d   Thumb Code    40  gpio.o(i.GPIODirModeSet)
+    GPIOPadConfigSet                         0x000003c5   Thumb Code   354  gpio.o(i.GPIOPadConfigSet)
+    GPIOPinRead                              0x00000535   Thumb Code     6  gpio.o(i.GPIOPinRead)
+    GPIOPinTypeGPIOInput                     0x0000053b   Thumb Code    28  gpio.o(i.GPIOPinTypeGPIOInput)
+    GPIOPinTypeGPIOOutput                    0x00000557   Thumb Code    28  gpio.o(i.GPIOPinTypeGPIOOutput)
+    GPIOPinWrite                             0x00000573   Thumb Code     6  gpio.o(i.GPIOPinWrite)
+    IntRegister                              0x00000579   Thumb Code    44  interrupt.o(i.IntRegister)
+    LCD_Command                              0x000005ad   Thumb Code    16  lcd2.o(i.LCD_Command)
+    LCD_Data                                 0x000005c1   Thumb Code    16  lcd2.o(i.LCD_Data)
+    LCD_Escreve_Dado                         0x000005d5   Thumb Code    56  lcd2.o(i.LCD_Escreve_Dado)
+    LCD_Escreve_Inst                         0x0000060d   Thumb Code    48  lcd2.o(i.LCD_Escreve_Inst)
+    LCD_EspecialChar                         0x0000063d   Thumb Code   436  lcd2.o(i.LCD_EspecialChar)
+    LCD_Init                                 0x000007f1   Thumb Code    48  lcd2.o(i.LCD_Init)
+    LeLinha                                  0x00000821   Thumb Code    48  teclado.o(i.LeLinha)
+    PortJ_Input                              0x00000855   Thumb Code   152  main.o(i.PortJ_Input)
+    PortJ_config                             0x000008f5   Thumb Code    30  main.o(i.PortJ_config)
+    PortK_config                             0x0000091d   Thumb Code    30  main.o(i.PortK_config)
+    PortL_config                             0x00000945   Thumb Code    42  main.o(i.PortL_config)
+    PortM_config                             0x00000979   Thumb Code    50  main.o(i.PortM_config)
+    PortN_config                             0x000009b5   Thumb Code    30  main.o(i.PortN_config)
+    SetupSystick                             0x000009dd   Thumb Code    34  main.o(i.SetupSystick)
+    SysCtlClockFreqSet                       0x00000a0d   Thumb Code   700  sysctl.o(i.SysCtlClockFreqSet)
+    SysCtlPeripheralEnable                   0x00000cf1   Thumb Code    36  sysctl.o(i.SysCtlPeripheralEnable)
+    SysCtlPeripheralReady                    0x00000d19   Thumb Code    40  sysctl.o(i.SysCtlPeripheralReady)
+    SysTickDisable                           0x00000d45   Thumb Code    14  systick.o(i.SysTickDisable)
+    SysTickEnable                            0x00000d53   Thumb Code    14  systick.o(i.SysTickEnable)
+    SysTickIntEnable                         0x00000d61   Thumb Code    14  systick.o(i.SysTickIntEnable)
+    SysTickIntHandler                        0x00000d71   Thumb Code    12  main.o(i.SysTickIntHandler)
+    SysTickIntRegister                       0x00000d81   Thumb Code    24  systick.o(i.SysTickIntRegister)
+    SysTickPeriodSet                         0x00000d99   Thumb Code    10  systick.o(i.SysTickPeriodSet)
+    SysTick_Wait1ms                          0x00000da5   Thumb Code    32  main.o(i.SysTick_Wait1ms)
+    SysTick_Wait1us                          0x00000dc9   Thumb Code    30  main.o(i.SysTick_Wait1us)
+    VarreTeclado                             0x00000ded   Thumb Code   214  teclado.o(i.VarreTeclado)
+    __0sprintf$5                             0x00000ec5   Thumb Code    34  printf5.o(i.__0sprintf$5)
+    __1sprintf$5                             0x00000ec5   Thumb Code     0  printf5.o(i.__0sprintf$5)
+    __2sprintf                               0x00000ec5   Thumb Code     0  printf5.o(i.__0sprintf$5)
+    __scatterload_copy                       0x00000eed   Thumb Code    14  handlers.o(i.__scatterload_copy)
+    __scatterload_null                       0x00000efb   Thumb Code     2  handlers.o(i.__scatterload_null)
+    __scatterload_zeroinit                   0x00000efd   Thumb Code    14  handlers.o(i.__scatterload_zeroinit)
+    main                                     0x000011d9   Thumb Code   344  main.o(i.main)
+    Region$$Table$$Base                      0x000015b4   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x000015d4   Number         0  anon$$obj.o(Region$$Table)
     rxbuffer                                 0x20000004   Data           4  main.o(.data)
     SysClock                                 0x20000008   Data           4  main.o(.data)
     __initial_sp                             0x20000870   Data           0  startup_rvmdk.o(STACK)
@@ -757,83 +840,94 @@ Memory Map of the image
 
   Image Entry point : 0x00000201
 
-  Load Region LR_1 (Base: 0x00000000, Size: 0x00001590, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x00000f34])
+  Load Region LR_1 (Base: 0x00000000, Size: 0x00001c40, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x000015e4])
 
-    Execution Region ER_RO (Exec base: 0x00000000, Load base: 0x00000000, Size: 0x00000f24, Max: 0xffffffff, ABSOLUTE)
-
-    Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
-
-    0x00000000   0x00000000   0x0000021c   Code   RO           90  * RESET               startup_rvmdk.o
-    0x0000021c   0x0000021c   0x00000000   Code   RO         1035  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
-    0x0000021c   0x0000021c   0x00000004   Code   RO         1300    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
-    0x00000220   0x00000220   0x00000004   Code   RO         1303    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
-    0x00000224   0x00000224   0x00000000   Code   RO         1305    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
-    0x00000224   0x00000224   0x00000000   Code   RO         1307    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
-    0x00000224   0x00000224   0x00000008   Code   RO         1308    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
-    0x0000022c   0x0000022c   0x00000004   Code   RO         1315    .ARM.Collect$$$$0000000E  mc_w.l(entry12b.o)
-    0x00000230   0x00000230   0x00000000   Code   RO         1310    .ARM.Collect$$$$0000000F  mc_w.l(entry10a.o)
-    0x00000230   0x00000230   0x00000000   Code   RO         1312    .ARM.Collect$$$$00000011  mc_w.l(entry11a.o)
-    0x00000230   0x00000230   0x00000004   Code   RO         1301    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
-    0x00000234   0x00000234   0x0000000e   Code   RO         1038    .text               mc_w.l(strlen.o)
-    0x00000242   0x00000242   0x00000002   PAD
-    0x00000244   0x00000244   0x00000024   Code   RO         1334    .text               mc_w.l(init.o)
-    0x00000268   0x00000268   0x0000003a   Code   RO         1354    .text               mc_w.l(__dczerorl.o)
-    0x000002a2   0x000002a2   0x00000028   Code   RO          166    i.GPIODirModeSet    driverlib.lib(gpio.o)
-    0x000002ca   0x000002ca   0x00000002   PAD
-    0x000002cc   0x000002cc   0x00000170   Code   RO          178    i.GPIOPadConfigSet  driverlib.lib(gpio.o)
-    0x0000043c   0x0000043c   0x0000001c   Code   RO          189    i.GPIOPinTypeGPIOInput  driverlib.lib(gpio.o)
-    0x00000458   0x00000458   0x0000001c   Code   RO          190    i.GPIOPinTypeGPIOOutput  driverlib.lib(gpio.o)
-    0x00000474   0x00000474   0x00000006   Code   RO          208    i.GPIOPinWrite      driverlib.lib(gpio.o)
-    0x0000047a   0x0000047a   0x00000002   PAD
-    0x0000047c   0x0000047c   0x00000034   Code   RO          938    i.IntRegister       driverlib.lib(interrupt.o)
-    0x000004b0   0x000004b0   0x00000014   Code   RO           95    i.LCD_Command       lcd2.o
-    0x000004c4   0x000004c4   0x00000014   Code   RO           96    i.LCD_Data          lcd2.o
-    0x000004d8   0x000004d8   0x00000038   Code   RO           97    i.LCD_Escreve_Dado  lcd2.o
-    0x00000510   0x00000510   0x00000030   Code   RO           98    i.LCD_Escreve_Inst  lcd2.o
-    0x00000540   0x00000540   0x000001b4   Code   RO           99    i.LCD_EspecialChar  lcd2.o
-    0x000006f4   0x000006f4   0x00000030   Code   RO          100    i.LCD_Init          lcd2.o
-    0x00000724   0x00000724   0x0000008c   Code   RO            2    i.SetupGPIOs        main.o
-    0x000007b0   0x000007b0   0x00000030   Code   RO            3    i.SetupSystick      main.o
-    0x000007e0   0x000007e0   0x000002e4   Code   RO          500    i.SysCtlClockFreqSet  driverlib.lib(sysctl.o)
-    0x00000ac4   0x00000ac4   0x00000028   Code   RO          532    i.SysCtlPeripheralEnable  driverlib.lib(sysctl.o)
-    0x00000aec   0x00000aec   0x0000002c   Code   RO          536    i.SysCtlPeripheralReady  driverlib.lib(sysctl.o)
-    0x00000b18   0x00000b18   0x0000000e   Code   RO          852    i.SysTickDisable    driverlib.lib(systick.o)
-    0x00000b26   0x00000b26   0x0000000e   Code   RO          853    i.SysTickEnable     driverlib.lib(systick.o)
-    0x00000b34   0x00000b34   0x0000000e   Code   RO          855    i.SysTickIntEnable  driverlib.lib(systick.o)
-    0x00000b42   0x00000b42   0x00000002   PAD
-    0x00000b44   0x00000b44   0x00000010   Code   RO            4    i.SysTickIntHandler  main.o
-    0x00000b54   0x00000b54   0x00000018   Code   RO          856    i.SysTickIntRegister  driverlib.lib(systick.o)
-    0x00000b6c   0x00000b6c   0x0000000a   Code   RO          859    i.SysTickPeriodSet  driverlib.lib(systick.o)
-    0x00000b76   0x00000b76   0x00000002   PAD
-    0x00000b78   0x00000b78   0x00000024   Code   RO            5    i.SysTick_Wait1ms   main.o
-    0x00000b9c   0x00000b9c   0x00000024   Code   RO            6    i.SysTick_Wait1us   main.o
-    0x00000bc0   0x00000bc0   0x00000024   Code   RO         1043    i.__0sprintf$bare   mc_w.l(printfb.o)
-    0x00000be4   0x00000be4   0x0000000e   Code   RO         1348    i.__scatterload_copy  mc_w.l(handlers.o)
-    0x00000bf2   0x00000bf2   0x00000002   Code   RO         1349    i.__scatterload_null  mc_w.l(handlers.o)
-    0x00000bf4   0x00000bf4   0x0000000e   Code   RO         1350    i.__scatterload_zeroinit  mc_w.l(handlers.o)
-    0x00000c02   0x00000c02   0x00000022   Code   RO         1048    i._printf_core      mc_w.l(printfb.o)
-    0x00000c24   0x00000c24   0x0000000a   Code   RO         1050    i._sputc            mc_w.l(printfb.o)
-    0x00000c2e   0x00000c2e   0x00000002   PAD
-    0x00000c30   0x00000c30   0x00000080   Code   RO            7    i.main              main.o
-    0x00000cb0   0x00000cb0   0x00000254   Data   RO          554    .constdata          driverlib.lib(sysctl.o)
-    0x00000f04   0x00000f04   0x00000020   Data   RO         1346    Region$$Table       anon$$obj.o
-
-
-    Execution Region ER_RW (Exec base: 0x20000000, Load base: 0x00000f24, Size: 0x0000066c, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x00000010])
+    Execution Region ER_RO (Exec base: 0x00000000, Load base: 0x00000000, Size: 0x000015d4, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   COMPRESSED   0x0000000c   Data   RW            8    .data               main.o
+    0x00000000   0x00000000   0x0000021c   Code   RO          117  * RESET               startup_rvmdk.o
+    0x0000021c   0x0000021c   0x00000000   Code   RO         1062  * .ARM.Collect$$$$00000000  mc_w.l(entry.o)
+    0x0000021c   0x0000021c   0x00000004   Code   RO         1328    .ARM.Collect$$$$00000001  mc_w.l(entry2.o)
+    0x00000220   0x00000220   0x00000004   Code   RO         1331    .ARM.Collect$$$$00000004  mc_w.l(entry5.o)
+    0x00000224   0x00000224   0x00000000   Code   RO         1333    .ARM.Collect$$$$00000008  mc_w.l(entry7b.o)
+    0x00000224   0x00000224   0x00000000   Code   RO         1335    .ARM.Collect$$$$0000000A  mc_w.l(entry8b.o)
+    0x00000224   0x00000224   0x00000008   Code   RO         1336    .ARM.Collect$$$$0000000B  mc_w.l(entry9a.o)
+    0x0000022c   0x0000022c   0x00000004   Code   RO         1343    .ARM.Collect$$$$0000000E  mc_w.l(entry12b.o)
+    0x00000230   0x00000230   0x00000000   Code   RO         1338    .ARM.Collect$$$$0000000F  mc_w.l(entry10a.o)
+    0x00000230   0x00000230   0x00000000   Code   RO         1340    .ARM.Collect$$$$00000011  mc_w.l(entry11a.o)
+    0x00000230   0x00000230   0x00000004   Code   RO         1329    .ARM.Collect$$$$00002712  mc_w.l(entry2.o)
+    0x00000234   0x00000234   0x0000000e   Code   RO         1065    .text               mc_w.l(strlen.o)
+    0x00000242   0x00000242   0x00000062   Code   RO         1349    .text               mc_w.l(uldiv.o)
+    0x000002a4   0x000002a4   0x00000024   Code   RO         1362    .text               mc_w.l(init.o)
+    0x000002c8   0x000002c8   0x0000001e   Code   RO         1365    .text               mc_w.l(llshl.o)
+    0x000002e6   0x000002e6   0x00000020   Code   RO         1367    .text               mc_w.l(llushr.o)
+    0x00000306   0x00000306   0x0000003a   Code   RO         1382    .text               mc_w.l(__dczerorl.o)
+    0x00000340   0x00000340   0x0000005c   Code   RO          164    i.AtivaColuna       teclado.o
+    0x0000039c   0x0000039c   0x00000028   Code   RO          193    i.GPIODirModeSet    driverlib.lib(gpio.o)
+    0x000003c4   0x000003c4   0x00000170   Code   RO          205    i.GPIOPadConfigSet  driverlib.lib(gpio.o)
+    0x00000534   0x00000534   0x00000006   Code   RO          207    i.GPIOPinRead       driverlib.lib(gpio.o)
+    0x0000053a   0x0000053a   0x0000001c   Code   RO          216    i.GPIOPinTypeGPIOInput  driverlib.lib(gpio.o)
+    0x00000556   0x00000556   0x0000001c   Code   RO          217    i.GPIOPinTypeGPIOOutput  driverlib.lib(gpio.o)
+    0x00000572   0x00000572   0x00000006   Code   RO          235    i.GPIOPinWrite      driverlib.lib(gpio.o)
+    0x00000578   0x00000578   0x00000034   Code   RO          965    i.IntRegister       driverlib.lib(interrupt.o)
+    0x000005ac   0x000005ac   0x00000014   Code   RO          122    i.LCD_Command       lcd2.o
+    0x000005c0   0x000005c0   0x00000014   Code   RO          123    i.LCD_Data          lcd2.o
+    0x000005d4   0x000005d4   0x00000038   Code   RO          124    i.LCD_Escreve_Dado  lcd2.o
+    0x0000060c   0x0000060c   0x00000030   Code   RO          125    i.LCD_Escreve_Inst  lcd2.o
+    0x0000063c   0x0000063c   0x000001b4   Code   RO          126    i.LCD_EspecialChar  lcd2.o
+    0x000007f0   0x000007f0   0x00000030   Code   RO          127    i.LCD_Init          lcd2.o
+    0x00000820   0x00000820   0x00000034   Code   RO          165    i.LeLinha           teclado.o
+    0x00000854   0x00000854   0x000000a0   Code   RO            1    i.PortJ_Input       main.o
+    0x000008f4   0x000008f4   0x00000028   Code   RO            2    i.PortJ_config      main.o
+    0x0000091c   0x0000091c   0x00000028   Code   RO            3    i.PortK_config      main.o
+    0x00000944   0x00000944   0x00000034   Code   RO            4    i.PortL_config      main.o
+    0x00000978   0x00000978   0x0000003c   Code   RO            5    i.PortM_config      main.o
+    0x000009b4   0x000009b4   0x00000028   Code   RO            6    i.PortN_config      main.o
+    0x000009dc   0x000009dc   0x00000030   Code   RO            7    i.SetupSystick      main.o
+    0x00000a0c   0x00000a0c   0x000002e4   Code   RO          527    i.SysCtlClockFreqSet  driverlib.lib(sysctl.o)
+    0x00000cf0   0x00000cf0   0x00000028   Code   RO          559    i.SysCtlPeripheralEnable  driverlib.lib(sysctl.o)
+    0x00000d18   0x00000d18   0x0000002c   Code   RO          563    i.SysCtlPeripheralReady  driverlib.lib(sysctl.o)
+    0x00000d44   0x00000d44   0x0000000e   Code   RO          879    i.SysTickDisable    driverlib.lib(systick.o)
+    0x00000d52   0x00000d52   0x0000000e   Code   RO          880    i.SysTickEnable     driverlib.lib(systick.o)
+    0x00000d60   0x00000d60   0x0000000e   Code   RO          882    i.SysTickIntEnable  driverlib.lib(systick.o)
+    0x00000d6e   0x00000d6e   0x00000002   PAD
+    0x00000d70   0x00000d70   0x00000010   Code   RO            8    i.SysTickIntHandler  main.o
+    0x00000d80   0x00000d80   0x00000018   Code   RO          883    i.SysTickIntRegister  driverlib.lib(systick.o)
+    0x00000d98   0x00000d98   0x0000000a   Code   RO          886    i.SysTickPeriodSet  driverlib.lib(systick.o)
+    0x00000da2   0x00000da2   0x00000002   PAD
+    0x00000da4   0x00000da4   0x00000024   Code   RO            9    i.SysTick_Wait1ms   main.o
+    0x00000dc8   0x00000dc8   0x00000024   Code   RO           10    i.SysTick_Wait1us   main.o
+    0x00000dec   0x00000dec   0x000000d6   Code   RO          166    i.VarreTeclado      teclado.o
+    0x00000ec2   0x00000ec2   0x00000002   PAD
+    0x00000ec4   0x00000ec4   0x00000028   Code   RO         1202    i.__0sprintf$5      mc_w.l(printf5.o)
+    0x00000eec   0x00000eec   0x0000000e   Code   RO         1376    i.__scatterload_copy  mc_w.l(handlers.o)
+    0x00000efa   0x00000efa   0x00000002   Code   RO         1377    i.__scatterload_null  mc_w.l(handlers.o)
+    0x00000efc   0x00000efc   0x0000000e   Code   RO         1378    i.__scatterload_zeroinit  mc_w.l(handlers.o)
+    0x00000f0a   0x00000f0a   0x00000002   PAD
+    0x00000f0c   0x00000f0c   0x000002c0   Code   RO         1207    i._printf_core      mc_w.l(printf5.o)
+    0x000011cc   0x000011cc   0x0000000a   Code   RO         1209    i._sputc            mc_w.l(printf5.o)
+    0x000011d6   0x000011d6   0x00000002   PAD
+    0x000011d8   0x000011d8   0x00000188   Code   RO           11    i.main              main.o
+    0x00001360   0x00001360   0x00000254   Data   RO          581    .constdata          driverlib.lib(sysctl.o)
+    0x000015b4   0x000015b4   0x00000020   Data   RO         1374    Region$$Table       anon$$obj.o
+
+
+    Execution Region ER_RW (Exec base: 0x20000000, Load base: 0x000015d4, Size: 0x0000066c, Max: 0xffffffff, ABSOLUTE, COMPRESSED[0x00000010])
+
+    Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
+
+    0x20000000   COMPRESSED   0x0000000c   Data   RW           12    .data               main.o
     0x2000000c   COMPRESSED   0x000003f4   PAD
-    0x20000400   COMPRESSED   0x0000026c   Data   RW          943    vtable              driverlib.lib(interrupt.o)
+    0x20000400   COMPRESSED   0x0000026c   Data   RW          970    vtable              driverlib.lib(interrupt.o)
 
 
-    Execution Region ER_ZI (Exec base: 0x2000066c, Load base: 0x00000f34, Size: 0x00000204, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_ZI (Exec base: 0x2000066c, Load base: 0x000015e4, Size: 0x00000204, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x2000066c   0x00000f34   0x00000004   PAD
-    0x20000670        -       0x00000200   Zero   RW           88    STACK               startup_rvmdk.o
+    0x2000066c   0x000015e4   0x00000004   PAD
+    0x20000670        -       0x00000200   Zero   RW          115    STACK               startup_rvmdk.o
 
 
 ==============================================================================
@@ -844,19 +938,20 @@ Image component sizes
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
        628          8          0          0          0       3085   lcd2.o
-       404         76          0         12          0       8135   main.o
+       920        134          0         12          0      10731   main.o
        540        514          0          0        512        248   startup_rvmdk.o
+       358         10          0          0          0       1663   teclado.o
 
     ----------------------------------------------------------------------
-      1572        598         32       1024        512      11468   Object Totals
+      2448        666         32       1024        512      15727   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-         0          0          0       1012          0          0   (incl. Padding)
+         2          0          0       1012          0          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Library Member Name
 
-       470         14          0          0          0       6866   gpio.o
+       476         14          0          0          0       7368   gpio.o
         52          8          0        620          0       1574   interrupt.o
        824         48        596          0          0       4490   sysctl.o
         76          0          0          0          0       2400   systick.o
@@ -872,22 +967,25 @@ Image component sizes
          8          4          0          0          0          0   entry9a.o
         30          0          0          0          0          0   handlers.o
         36          8          0          0          0         68   init.o
-        80          4          0          0          0        236   printfb.o
+        30          0          0          0          0         68   llshl.o
+        32          0          0          0          0         68   llushr.o
+       754         50          0          0          0        252   printf5.o
         14          0          0          0          0         68   strlen.o
+        98          0          0          0          0         92   uldiv.o
 
     ----------------------------------------------------------------------
-      1676         90        596        620          4      15702   Library Totals
-        12          0          0          0          4          0   (incl. Padding)
+      2512        136        596        620          4      16448   Library Totals
+         8          0          0          0          4          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Library Name
 
-      1422         70        596        620          0      15330   driverlib.lib
-       242         20          0          0          0        372   mc_w.l
+      1428         70        596        620          0      15832   driverlib.lib
+      1076         66          0          0          0        616   mc_w.l
 
     ----------------------------------------------------------------------
-      1676         90        596        620          4      15702   Library Totals
+      2512        136        596        620          4      16448   Library Totals
 
     ----------------------------------------------------------------------
 
@@ -896,15 +994,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      3248        688        628       1644        516      25450   Grand Totals
-      3248        688        628         16        516      25450   ELF Image Totals (compressed)
-      3248        688        628         16          0          0   ROM Totals
+      4960        802        628       1644        516      29451   Grand Totals
+      4960        802        628         16        516      29451   ELF Image Totals (compressed)
+      4960        802        628         16          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                 3876 (   3.79kB)
+    Total RO  Size (Code + RO Data)                 5588 (   5.46kB)
     Total RW  Size (RW Data + ZI Data)              2160 (   2.11kB)
-    Total ROM Size (Code + RO Data + RW Data)       3892 (   3.80kB)
+    Total ROM Size (Code + RO Data + RW Data)       5604 (   5.47kB)
 
 ==============================================================================
 

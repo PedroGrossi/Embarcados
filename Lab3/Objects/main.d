@@ -9,4 +9,5 @@
 .\objects\main.o: ..\TivaWare_C_Series-2.2.0.295\driverlib/pin_map.h
 .\objects\main.o: ..\TivaWare_C_Series-2.2.0.295\driverlib/sysctl.h
 .\objects\main.o: ..\TivaWare_C_Series-2.2.0.295\driverlib/systick.h
+.\objects\main.o: teclado.h
 .\objects\main.o: lcd2.h
