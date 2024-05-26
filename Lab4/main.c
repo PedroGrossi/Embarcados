@@ -7,9 +7,7 @@ Desenvolvido para a placa EK-TM4C1294XL utilizando o SDK TivaWare no KEIL
 #define PART_TM4C1294NCPDT 1
 
 #include <stdint.h>
-#include <stdio.h>
 #include <stdbool.h>
-#include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
@@ -17,17 +15,18 @@ Desenvolvido para a placa EK-TM4C1294XL utilizando o SDK TivaWare no KEIL
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
 #include "driverlib/interrupt.h"
-#include "driverlib/rom.h"
-#include "driverlib/rom_map.h"
 #include "driverlib/uart.h"
 
 #include "relay_functions.h"
+#include "uart_functions.h"
 
 
 //variável que conta os ticks(1ms) - Volatile não permite o compilador otimizar o código 
 static volatile unsigned int SysTicks1ms;
 //buffer de rx ...
 unsigned char rxbuffer[4];
+//buffer de tx ...
+unsigned char txbuffer[4];
 //variável para receber o retorno do cfg do clk
 uint32_t SysClock;
 
@@ -36,13 +35,15 @@ void SysTickIntHandler(void);
 void SetupSystick(void);
 void UART_Interruption_Handler(void);
 void SetupUart(void);
-void UARTStringSend(const uint8_t *String, uint32_t tamanho);
 
 void PortF_setup(void);
 void PortN_setup(void);
 
 int main(void)
 {
+	//variavel para o status dos reles -> inicializa com todos desligados
+	bool statusReles[4] = {false, false, false, false};
+	
 	//Inicializar clock principal a 120MHz
   SysClock = SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_240), 120000000);
 	//executa configuração e inicialização do SysTick
@@ -55,7 +56,14 @@ int main(void)
 	//loop infinito
   while (1)
 	{
-		
+			// Aguarda comando pela uart
+			while(!UARTCharsAvail(UART0_BASE))
+			{
+				// armazena comando no txbuffer
+				UARTStringReceive(txbuffer);
+				// verifica comando recebido, caso seja um comando aparentemente valido tenta executar
+				if (txbuffer[0] == '#') executaComando(txbuffer, statusReles);
+			}
 	}
 }
 
@@ -111,12 +119,6 @@ void SetupUart(void)
   GPIOPinConfigure(GPIO_PA0_U0RX);
   GPIOPinConfigure(GPIO_PA1_U0TX);
   GPIOPinTypeUART(GPIO_PORTA_BASE,(GPIO_PIN_0|GPIO_PIN_1));
-}
-
-//função para enviar string pela uart
-void UARTStringSend(const uint8_t *String, uint32_t tamanho)
-{
-while (tamanho--) UARTCharPut(UART0_BASE, *String++);
 }
 
 //função para setup GPIO F

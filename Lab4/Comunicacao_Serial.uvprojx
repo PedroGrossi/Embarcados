@@ -405,6 +405,16 @@
               <FileType>5</FileType>
               <FilePath>.\relay_functions.h</FilePath>
             </File>
+            <File>
+              <FileName>uart_functions.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\uart_functions.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart_functions.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\uart_functions.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

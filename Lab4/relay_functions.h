@@ -9,3 +9,6 @@
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
+
+int8_t executaComando(uint8_t *commandBuffer, bool *statusReles);
