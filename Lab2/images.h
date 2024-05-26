@@ -1,3 +1,9 @@
+// imageFunctions.h
+// Desenvolvido para a placa EK-TM4C1294XL
+// Histograma para imagens de até 64K pixels
+// Pedro Henrique Grossi da Silva
+// 04/05/2024
+
 #include <stdint.h>
 
 #ifndef IMAGES_H

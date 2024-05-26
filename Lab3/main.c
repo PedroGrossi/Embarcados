@@ -13,7 +13,7 @@ Desenvolvido para a placa EK-TM4C1294XL utilizando o SDK TivaWare no KEIL
 #include "inc/hw_memmap.h"
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
-#include "driverlib/pin_map.h"
+//#include "driverlib/pin_map.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
 
@@ -23,8 +23,6 @@ Desenvolvido para a placa EK-TM4C1294XL utilizando o SDK TivaWare no KEIL
 
 //variável que conta os ticks(1ms) - Volatile não permite o compilador otimizar o código 
 static volatile unsigned int SysTicks1ms;
-//buffer de rx ...
-unsigned char rxbuffer[4];
 //variável para receber o retorno do cfg do clk
 uint32_t SysClock;
 
@@ -34,11 +32,11 @@ void SetupSystick(void);
 
 void SysTick_Wait1ms(uint32_t data);
 void SysTick_Wait1us(uint32_t data);
-void PortJ_config(void);
-void PortK_config(void);
-void PortL_config(void);
-void PortM_config(void);
-void PortN_config(void);
+void PortJ_setup(void);
+void PortK_setup(void);
+void PortL_setup(void);
+void PortM_setup(void);
+void PortN_setup(void);
 uint32_t PortJ_Input(void);
 
 int main(void)
@@ -51,12 +49,12 @@ int main(void)
   SysClock = SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_240), 80000000);
 	//executa configuração e inicialização do SysTick
   SetupSystick();
-	//executa configuração e inicialização dos GPIOs
-	PortJ_config();
-	PortK_config();
-	PortL_config();
-	PortM_config();
-	PortN_config();
+	//executa o setup dos GPIOs
+	PortJ_setup();
+	PortK_setup();
+	PortL_setup();
+	PortM_setup();
+	PortN_setup();
 	//Inicializa o LCD
 	LCD_Init();
 	LCD_EspecialChar();
@@ -138,18 +136,20 @@ void SysTick_Wait1us(uint32_t data)
 }
 
 //função para setup GPIO J
-void PortJ_config(void)
+void PortJ_setup(void)
 {
 	//habilitar gpio port J
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOJ);
   //aguardar o periférico ficar pronto para uso
   while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOJ)) {/*Espera habilitar o port*/}
-  GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE,
+  GPIOPinTypeGPIOInput(GPIO_PORTN_BASE,
 	                      GPIO_PIN_0 | GPIO_PIN_1);
+	//configura os pinos para 2mA como limite de corrente e com week pull-up
+  GPIOPadConfigSet(GPIO_PORTJ_BASE, GPIO_PIN_0 | GPIO_PIN_1, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
 }
 
 //função para setup GPIO K
-void PortK_config(void)
+void PortK_setup(void)
 {
 	//habilitar gpio port K
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOK);
@@ -161,7 +161,7 @@ void PortK_config(void)
 }
 
 //função para setup GPIO L
-void PortL_config(void)
+void PortL_setup(void)
 {
 	//habilitar gpio port L
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOL);
@@ -175,7 +175,7 @@ void PortL_config(void)
 }
 
 //função para setup GPIO M
-void PortM_config(void)
+void PortM_setup(void)
 {
 	//habilitar gpio port M
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOM);
@@ -192,7 +192,7 @@ void PortM_config(void)
 }
 
 //função para setup GPIO N
-void PortN_config(void)
+void PortN_setup(void)
 {
 	//habilitar gpio port N
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPION);
