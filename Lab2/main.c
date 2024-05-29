@@ -54,13 +54,19 @@ int main(void)
 	if(image_size!=0){
 		// send histogram data - image0
 		UARTStringSend("X,Y\r\n", 5);
-		for (uint16_t k=0; k<256; k++){
+		for (uint16_t k=0; k<256; k++)
+		{
 			if(histogram[k]!=0){
 				UARTNumberSend(k);
 				UARTStringSend(",", 1);
 				UARTNumberSend(histogram[k]);
 				UARTStringSend("\r\n", 2);
-			};
+			}
+			else
+			{
+				UARTNumberSend(k);
+				UARTStringSend(",000\r\n", 6);
+			}
 		};
 	}else{
 		UARTStringSend("Image0 is bigger than 64K\r\n", 27);
@@ -72,13 +78,19 @@ int main(void)
 	if(image_size!=0){
 		// send histogram data - image0
 		UARTStringSend("X,Y\r\n", 5);
-		for (uint16_t k=0; k<256; k++){
+		for (uint16_t k=0; k<256; k++)
+		{
 			if(histogram[k]!=0){
 				UARTNumberSend(k);
 				UARTStringSend(",", 1);
 				UARTNumberSend(histogram[k]);
 				UARTStringSend("\r\n", 2);
-			};
+			}
+			else
+			{
+				UARTNumberSend(k);
+				UARTStringSend(",000\r\n", 6);
+			}
 		};
 	}else{
 		UARTStringSend("Image1 is bigger than 64K\r\n", 27);
