@@ -1,10 +1,10 @@
 # Pastas para compilação
 TivaWare_C_Series-2.2.0.295
 # Pastas de exemplo
-KEIL_MyBlinky
-KEIL_MyBlinky2
-KEIL_MyBlinky3
-KEIL_MyBlinky4
+MyBlinky
+MyBlinky2
+MyBlinky3
+MyBlinky4
 TLcd.c
 OLED_EKTM4C1294XL_ShieldI2C
 # Pasta com app de leitura e escrita serial

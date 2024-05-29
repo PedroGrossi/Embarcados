@@ -2,7 +2,7 @@
 // Desenvolvido para a placa EK-TM4C1294XL
 // Controla reles (representados por leds)
 // Pedro Henrique Grossi da Silva
-// 26/05/2024
+// 28/05/2024
 
 //TivaWare uC: Usado internamente para identificar o uC em alguns .h da TivaWare
 #define PART_TM4C1294NCPDT 1
@@ -31,33 +31,33 @@ int8_t executaComando(uint8_t *commandBuffer, bool *statusReles)
 	if (commandBuffer[1] == 'R')
 	{
 		// Verifica se o comando é valido
-		if (commandBuffer[3] != 1 && commandBuffer[0] != 0) retorno = 1;
+		if (commandBuffer[3] != '1' && commandBuffer[3] != '0') retorno = -1;
 		// Comando valido (por hora)
 		else
 		{
 			// Verifica relé do comando
 			switch (commandBuffer[2])
 			{
-				case 0:
-					if (commandBuffer[3] == 1) statusReles[0] = true; // ligar relé 0
+				case '0':
+					if (commandBuffer[3] == '1') statusReles[0] = true; // ligar relé 0
 					else statusReles[0] = false; //desligar relé 0
-					GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, statusReles[0]); // atualiza o status do relé 0
+					GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, statusReles[0]<<1); // atualiza o status do relé 0
 				  AnsOneRele(0, statusReles[0]); // envia resposta de atualização
 					break;
-				case 1:
-					if (commandBuffer[3] == 1) statusReles[1] = true; // ligar relé 1
+				case '1':
+					if (commandBuffer[3] == '1') statusReles[1] = true; // ligar relé 1
 					else statusReles[1] = false; //desligar relé 1
 					GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, statusReles[1]); // atualiza o status do relé 1
 				  AnsOneRele(1, statusReles[1]); // envia resposta de atualização
 					break;
-				case 2:
-					if (commandBuffer[3] == 1) statusReles[2] = true; // ligar relé 2
+				case '2':
+					if (commandBuffer[3] == '1') statusReles[2] = true; // ligar relé 2
 					else statusReles[2] = false; //desligar relé 2
-					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, statusReles[2]); // atualiza o status do relé 2
+					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, statusReles[2]<<4); // atualiza o status do relé 2
 				  AnsOneRele(2, statusReles[2]); // envia resposta de atualização
 					break;
-				case 3:
-					if (commandBuffer[3] == 1) statusReles[3] = true; // ligar relé 3
+				case '3':
+					if (commandBuffer[3] == '1') statusReles[3] = true; // ligar relé 3
 					else statusReles[3] = false; //desligar relé 3
 					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, statusReles[3]); // atualiza o status do relé 3
 				  AnsOneRele(3, statusReles[3]); // envia resposta de atualização
@@ -75,7 +75,7 @@ int8_t executaComando(uint8_t *commandBuffer, bool *statusReles)
 		// Verifica se é  um comando para alterar o status
 		if (commandBuffer[2] == 'X')
 		{
-			if (commandBuffer[3] == 1)
+			if (commandBuffer[3] == '1')
 			{
 				// ligar todos os relés
 				statusReles[0] = true;
@@ -83,14 +83,14 @@ int8_t executaComando(uint8_t *commandBuffer, bool *statusReles)
 				statusReles[2] = true;
 				statusReles[3] = true;
 				// atualiza o status de todos os relés
-				GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, statusReles[0]);
+				GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, statusReles[0]<<1);
 				GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, statusReles[1]);
-				GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, statusReles[2]);
+				GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, statusReles[2]<<4);
 				GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, statusReles[3]);
 				// envia resposta de atualização
 				UARTStringSend("@TX1", 4);
 			}
-			else if (commandBuffer[3] == 0)
+			else if (commandBuffer[3] == '0')
 			{
 				// desligar todos os relés
 				statusReles[0] = false;
@@ -98,9 +98,9 @@ int8_t executaComando(uint8_t *commandBuffer, bool *statusReles)
 				statusReles[2] = false;
 				statusReles[3] = false;
 				// atualiza o status de todos os relés
-				GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, statusReles[0]);
+				GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, statusReles[0]<<1);
 				GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, statusReles[1]);
-				GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, statusReles[2]);
+				GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, statusReles[2]<<4);
 				GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, statusReles[3]);
 				// envia resposta de atualização
 				UARTStringSend("@TX0", 4);
@@ -152,7 +152,7 @@ void AnsStatus(bool *statusReles)
 	if (statusReles[0] == true) data += 8;
 	if (statusReles[1] == true) data += 4;
 	if (statusReles[2] == true) data += 2;
-	if (statusReles[1] == true) data += 1;
+	if (statusReles[3] == true) data += 1;
 	// Envia inicio da mesagem
 	UARTStringSend("@TS", 3);
 	// Envia status dos reles

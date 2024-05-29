@@ -1,5 +1,6 @@
 /*##############################################################################
 Alunos = Gabriel Passos e Pedro Henrique Grossi da Silva
+Data = 28/05/2024
 Desenvolvido para a placa EK-TM4C1294XL utilizando o SDK TivaWare no KEIL
 ##############################################################################*/
 
@@ -43,7 +44,8 @@ int main(void)
 {
 	//variavel para o status dos reles -> inicializa com todos desligados
 	bool statusReles[4] = {false, false, false, false};
-	
+	//variavel para tempo
+	unsigned int timeUART;
 	//Inicializar clock principal a 120MHz
   SysClock = SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_240), 120000000);
 	//executa configuração e inicialização do SysTick
@@ -57,10 +59,13 @@ int main(void)
   while (1)
 	{
 			// Aguarda comando pela uart
-			while(!UARTCharsAvail(UART0_BASE))
+			if(UARTCharsAvail(UART0_BASE))
 			{
-				// armazena comando no txbuffer
-				UARTStringReceive(txbuffer);
+				// Aguarda receber toda o comando
+				timeUART = SysTicks1ms;
+				while (SysTicks1ms < timeUART+3){ /* aguarda 3 ciclos de clock */ }; 
+				// armazena comando no txbuffer respeitando tamanho do buffer
+				UARTStringReceive(txbuffer, 4);
 				// verifica comando recebido, caso seja um comando aparentemente valido tenta executar
 				if (txbuffer[0] == '#') executaComando(txbuffer, statusReles);
 			}
@@ -111,7 +116,6 @@ void SetupUart(void)
   SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
   while(!SysCtlPeripheralReady(SYSCTL_PERIPH_UART0));
   UARTConfigSetExpClk(UART0_BASE, SysClock, 115200, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));
-  UARTFIFODisable(UART0_BASE);
   UARTIntEnable(UART0_BASE,UART_INT_RX);
   UARTIntRegister(UART0_BASE,UART_Interruption_Handler);
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
@@ -129,8 +133,7 @@ void PortF_setup(void)
 	//aguarda o periférico ficar pronto para uso	
 	while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOF)) {/*espera habilitar o port*/}
 	//configura o pin_0, pin_4 como saída
-  GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE,
-	                      GPIO_PIN_0 | GPIO_PIN_4);
+  GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, GPIO_PIN_0 | GPIO_PIN_4);
 }
 
 //função para setup GPIO N
@@ -141,6 +144,5 @@ void PortN_setup(void)
 	//aguarda o periférico ficar pronto para uso	
 	while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPION)) {/*espera habilitar o port*/}
 	//configura o pin_0, pin_1 como saída
-  GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE,
-	                      GPIO_PIN_0 | GPIO_PIN_1);
+  GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 }
