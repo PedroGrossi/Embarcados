@@ -7,6 +7,12 @@
 // Prof. Marcos P.
 // 16/07/2023
 
+/* 
+// Biblioteca adaptada com TivaWare
+// Pedro Henrique Grossi da Silva
+// 31/05/2024
+*/
+
 //TivaWare uC: Usado internamente para identificar o uC em alguns .h da TivaWare
 #define PART_TM4C1294NCPDT 1
 
@@ -56,7 +62,7 @@ void AtivaColuna(uint8_t coluna)
 uint8_t LeLinha(void)
 {
 	  uint32_t portL_input;
-		portL_input = GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3);
+		portL_input = GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3) & 0xF;
 	  switch(portL_input)
 		{
 			case 0x0E:  //Port L0

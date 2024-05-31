@@ -11,6 +11,12 @@
 // Barramento do LCD: PORT K (8bits)
 */
 
+/* 
+// Biblioteca adaptada com TivaWare
+// Pedro Henrique Grossi da Silva
+// 31/05/2024
+*/
+
 //TivaWare uC: Usado internamente para identificar o uC em alguns .h da TivaWare
 #define PART_TM4C1294NCPDT 1
 
@@ -37,16 +43,12 @@ void LCD_Init(void)
 
 void LCD_Command(uint32_t data)
 {
-  GPIOPinWrite(GPIO_PORTM_BASE,
-	             GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2,
-	             data);
+  GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2, data);
 }
 
 void LCD_Data(uint32_t data)
 {
-  GPIOPinWrite(GPIO_PORTK_BASE, 
-	             GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7,
-               data);
+  GPIOPinWrite(GPIO_PORTK_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, data);
 }	
 
 void LCD_Escreve_Inst(uint32_t dado)

@@ -3,11 +3,11 @@
 <title>Static Call Graph - [.\Objects\Display_lcd.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Display_lcd.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Sat May 25 22:42:50 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Fri May 31 00:06:47 2024
 <BR><P>
 <H3>Maximum Stack Usage =         80 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-main &rArr; PortN_config &rArr; GPIOPinTypeGPIOOutput &rArr; GPIOPadConfigSet
+main &rArr; PortN_setup &rArr; GPIOPinTypeGPIOOutput &rArr; GPIOPadConfigSet
 <P>
 <H3>
 Functions with no stack information
@@ -124,9 +124,8 @@ Global Symbols
 </UL>
 <BR>[Called By]<UL><LI><a href="#[14]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinTypeGPIOOutput
 <LI><a href="#[11]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinTypeGPIOInput
-<LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortM_config
-<LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortL_config
-<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortJ_config
+<LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortL_setup
+<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortJ_setup
 </UL>
 
 <P><STRONG><a name="[1e]"></a>GPIOPinRead</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, gpio.o(i.GPIOPinRead))
@@ -140,9 +139,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIODirModeSet
 <LI><a href="#[13]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPadConfigSet
 </UL>
-<BR>[Called By]<UL><LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortM_config
-<LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortL_config
-<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortJ_config
+<BR>[Called By]<UL><LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortL_setup
+<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortJ_setup
 </UL>
 
 <P><STRONG><a name="[14]"></a>GPIOPinTypeGPIOOutput</STRONG> (Thumb, 28 bytes, Stack size 12 bytes, gpio.o(i.GPIOPinTypeGPIOOutput))
@@ -151,9 +149,9 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIODirModeSet
 <LI><a href="#[13]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPadConfigSet
 </UL>
-<BR>[Called By]<UL><LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortN_config
-<LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortM_config
-<LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortK_config
+<BR>[Called By]<UL><LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortN_setup
+<LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortM_setup
+<LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortK_setup
 </UL>
 
 <P><STRONG><a name="[10]"></a>GPIOPinWrite</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, gpio.o(i.GPIOPinWrite))
@@ -231,7 +229,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[1d]"></a>LeLinha</STRONG> (Thumb, 48 bytes, Stack size 8 bytes, teclado.o(i.LeLinha))
+<P><STRONG><a name="[1d]"></a>LeLinha</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, teclado.o(i.LeLinha))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = LeLinha
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinRead
@@ -239,7 +237,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[2e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;VarreTeclado
 </UL>
 
-<P><STRONG><a name="[1f]"></a>PortJ_Input</STRONG> (Thumb, 152 bytes, Stack size 24 bytes, main.o(i.PortJ_Input))
+<P><STRONG><a name="[1f]"></a>PortJ_Input</STRONG> (Thumb, 228 bytes, Stack size 24 bytes, main.o(i.PortJ_Input))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = PortJ_Input
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinRead
@@ -247,8 +245,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[20]"></a>PortJ_config</STRONG> (Thumb, 42 bytes, Stack size 8 bytes, main.o(i.PortJ_config))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = PortJ_config &rArr; GPIOPinTypeGPIOInput &rArr; GPIOPadConfigSet
+<P><STRONG><a name="[20]"></a>PortJ_setup</STRONG> (Thumb, 42 bytes, Stack size 8 bytes, main.o(i.PortJ_setup))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = PortJ_setup &rArr; GPIOPinTypeGPIOInput &rArr; GPIOPadConfigSet
 </UL>
 <BR>[Calls]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralReady
 <LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralEnable
@@ -258,8 +256,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[23]"></a>PortK_config</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, main.o(i.PortK_config))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = PortK_config &rArr; GPIOPinTypeGPIOOutput &rArr; GPIOPadConfigSet
+<P><STRONG><a name="[23]"></a>PortK_setup</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, main.o(i.PortK_setup))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = PortK_setup &rArr; GPIOPinTypeGPIOOutput &rArr; GPIOPadConfigSet
 </UL>
 <BR>[Calls]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralReady
 <LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralEnable
@@ -268,8 +266,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[24]"></a>PortL_config</STRONG> (Thumb, 42 bytes, Stack size 8 bytes, main.o(i.PortL_config))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = PortL_config &rArr; GPIOPinTypeGPIOInput &rArr; GPIOPadConfigSet
+<P><STRONG><a name="[24]"></a>PortL_setup</STRONG> (Thumb, 42 bytes, Stack size 8 bytes, main.o(i.PortL_setup))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = PortL_setup &rArr; GPIOPinTypeGPIOInput &rArr; GPIOPadConfigSet
 </UL>
 <BR>[Calls]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralReady
 <LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralEnable
@@ -279,20 +277,18 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[25]"></a>PortM_config</STRONG> (Thumb, 50 bytes, Stack size 8 bytes, main.o(i.PortM_config))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = PortM_config &rArr; GPIOPinTypeGPIOOutput &rArr; GPIOPadConfigSet
+<P><STRONG><a name="[25]"></a>PortM_setup</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, main.o(i.PortM_setup))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = PortM_setup &rArr; GPIOPinTypeGPIOOutput &rArr; GPIOPadConfigSet
 </UL>
 <BR>[Calls]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralReady
 <LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralEnable
 <LI><a href="#[14]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinTypeGPIOOutput
-<LI><a href="#[11]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinTypeGPIOInput
-<LI><a href="#[13]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPadConfigSet
 </UL>
 <BR>[Called By]<UL><LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[26]"></a>PortN_config</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, main.o(i.PortN_config))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = PortN_config &rArr; GPIOPinTypeGPIOOutput &rArr; GPIOPadConfigSet
+<P><STRONG><a name="[26]"></a>PortN_setup</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, main.o(i.PortN_setup))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = PortN_setup &rArr; GPIOPinTypeGPIOOutput &rArr; GPIOPadConfigSet
 </UL>
 <BR>[Calls]<UL><LI><a href="#[22]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralReady
 <LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlPeripheralEnable
@@ -320,19 +316,19 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[21]"></a>SysCtlPeripheralEnable</STRONG> (Thumb, 36 bytes, Stack size 0 bytes, sysctl.o(i.SysCtlPeripheralEnable))
-<BR><BR>[Called By]<UL><LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortN_config
-<LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortM_config
-<LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortL_config
-<LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortK_config
-<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortJ_config
+<BR><BR>[Called By]<UL><LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortN_setup
+<LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortM_setup
+<LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortL_setup
+<LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortK_setup
+<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortJ_setup
 </UL>
 
 <P><STRONG><a name="[22]"></a>SysCtlPeripheralReady</STRONG> (Thumb, 40 bytes, Stack size 0 bytes, sysctl.o(i.SysCtlPeripheralReady))
-<BR><BR>[Called By]<UL><LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortN_config
-<LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortM_config
-<LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortL_config
-<LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortK_config
-<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortJ_config
+<BR><BR>[Called By]<UL><LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortN_setup
+<LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortM_setup
+<LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortL_setup
+<LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortK_setup
+<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortJ_setup
 </UL>
 
 <P><STRONG><a name="[28]"></a>SysTickDisable</STRONG> (Thumb, 14 bytes, Stack size 0 bytes, systick.o(i.SysTickDisable))
@@ -362,11 +358,11 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetupSystick
 </UL>
 
-<P><STRONG><a name="[1c]"></a>SysTick_Wait1ms</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, main.o(i.SysTick_Wait1ms))
+<P><STRONG><a name="[1c]"></a>SysTick_Wait1ms</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, main.o(i.SysTick_Wait1ms))
 <BR><BR>[Called By]<UL><LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Init
 </UL>
 
-<P><STRONG><a name="[18]"></a>SysTick_Wait1us</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, main.o(i.SysTick_Wait1us))
+<P><STRONG><a name="[18]"></a>SysTick_Wait1us</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, main.o(i.SysTick_Wait1us))
 <BR><BR>[Called By]<UL><LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Init
 <LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Escreve_Inst
 <LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Escreve_Dado
@@ -401,7 +397,7 @@ Global Symbols
 <P><STRONG><a name="[43]"></a>__scatterload_zeroinit</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_zeroinit), UNUSED)
 
 <P><STRONG><a name="[4]"></a>main</STRONG> (Thumb, 344 bytes, Stack size 24 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = main &rArr; PortN_config &rArr; GPIOPinTypeGPIOOutput &rArr; GPIOPadConfigSet
+<BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = main &rArr; PortN_setup &rArr; GPIOPinTypeGPIOOutput &rArr; GPIOPadConfigSet
 </UL>
 <BR>[Calls]<UL><LI><a href="#[2e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;VarreTeclado
 <LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SysCtlClockFreqSet
@@ -411,11 +407,11 @@ Global Symbols
 <LI><a href="#[17]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;LCD_Escreve_Dado
 <LI><a href="#[10]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIOPinWrite
 <LI><a href="#[27]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetupSystick
-<LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortN_config
-<LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortM_config
-<LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortL_config
-<LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortK_config
-<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortJ_config
+<LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortN_setup
+<LI><a href="#[25]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortM_setup
+<LI><a href="#[24]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortL_setup
+<LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortK_setup
+<LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortJ_setup
 <LI><a href="#[1f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortJ_Input
 <LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__2sprintf
 <LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
