@@ -395,19 +395,9 @@
               <FilePath>.\startup_rvmdk.S</FilePath>
             </File>
             <File>
-              <FileName>imageFunctions.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\imageFunctions.h</FilePath>
-            </File>
-            <File>
               <FileName>images.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\images.c</FilePath>
-            </File>
-            <File>
-              <FileName>images.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\images.h</FilePath>
             </File>
             <File>
               <FileName>imageFunctions.c</FileName>

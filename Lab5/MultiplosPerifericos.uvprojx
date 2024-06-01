@@ -401,19 +401,19 @@
               <FilePath>.\relay_functions.c</FilePath>
             </File>
             <File>
-              <FileName>relay_functions.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\relay_functions.h</FilePath>
-            </File>
-            <File>
               <FileName>uart_functions.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\uart_functions.c</FilePath>
             </File>
             <File>
-              <FileName>uart_functions.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\uart_functions.h</FilePath>
+              <FileName>ssd1306.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\ssd1306.c</FilePath>
+            </File>
+            <File>
+              <FileName>teclado.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\teclado.c</FilePath>
             </File>
           </Files>
         </Group>

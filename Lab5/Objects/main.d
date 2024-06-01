@@ -1,6 +1,7 @@
 .\objects\main.o: main.c
 .\objects\main.o: C:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdint.h
 .\objects\main.o: C:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\stdbool.h
+.\objects\main.o: C:\Keil_v5\ARM\ARM_Compiler_5.06u7\Bin\..\include\string.h
 .\objects\main.o: ..\TivaWare_C_Series-2.2.0.295\inc/hw_memmap.h
 .\objects\main.o: ..\TivaWare_C_Series-2.2.0.295\driverlib/debug.h
 .\objects\main.o: ..\TivaWare_C_Series-2.2.0.295\driverlib/gpio.h
@@ -10,5 +11,10 @@
 .\objects\main.o: ..\TivaWare_C_Series-2.2.0.295\driverlib/interrupt.h
 .\objects\main.o: ..\TivaWare_C_Series-2.2.0.295\driverlib/uart.h
 .\objects\main.o: ..\TivaWare_C_Series-2.2.0.295\driverlib/pwm.h
+.\objects\main.o: ..\TivaWare_C_Series-2.2.0.295\driverlib/i2c.h
 .\objects\main.o: relay_functions.h
 .\objects\main.o: uart_functions.h
+.\objects\main.o: i2c.h
+.\objects\main.o: ssd1306.h
+.\objects\main.o: bitmap.h
+.\objects\main.o: teclado.h

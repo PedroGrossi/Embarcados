@@ -401,19 +401,9 @@
               <FilePath>.\lcd2.c</FilePath>
             </File>
             <File>
-              <FileName>lcd2.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\lcd2.h</FilePath>
-            </File>
-            <File>
               <FileName>teclado.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\teclado.c</FilePath>
-            </File>
-            <File>
-              <FileName>teclado.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\teclado.h</FilePath>
             </File>
           </Files>
         </Group>
