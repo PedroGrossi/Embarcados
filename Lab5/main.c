@@ -9,7 +9,6 @@ Desenvolvido para a placa EK-TM4C1294XL utilizando o SDK TivaWare no KEIL
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <string.h>
 #include "inc/hw_memmap.h"
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
@@ -44,20 +43,21 @@ void SysTickIntHandler(void);
 void SetupSystick(void);
 void UART_Interruption_Handler(void);
 void SetupUart(void);
+void I2C0_config(void);
+void I2C0_sendSingleByte(uint8_t slave_addr, char data);
+void I2C0_sendMultipleBytes(uint8_t slave_addr, uint8_t numOfBytes, char by[]);
+void I2C7_config(void);
+void I2C7_sendSingleByte(uint8_t slave_addr, char data);
+void I2C7_sendMultipleBytes(uint8_t slave_addr, uint8_t numOfBytes, char by[]);
 
 void PortF_setup(void);
 void PWM0_setup(void);
 void PortL_setup(void);
 void PortM_setup(void);
 void PortN_setup(void);
-
-void I2C0_config(void);
-void I2C0_sendSingleByte(uint8_t slave_addr, char data);
-void I2C0_sendMultipleBytes(uint8_t slave_addr, uint8_t numOfBytes, char by[]);
 void I2C0_UpdateRelayStatus(bool *statusRelays);
-void I2C7_config(void);
-void I2C7_sendSingleByte(uint8_t slave_addr, char data);
-void I2C7_sendMultipleBytes(uint8_t slave_addr, uint8_t numOfBytes, char by[]);
+void pwmIntensity(unsigned char Tecla, char *ledIntensity);
+
 
 int main(void)
 {
@@ -66,11 +66,11 @@ int main(void)
 	//variavel para tempo da UART
 	unsigned int UARTtime;
 	//variavel para intensidade do led PWM
-	char ledIntensity[] = "99";
-	//controle de tempo para cada oled0, oled7:
-	unsigned int oled0time=0, oled7time=0, tecladotime=0;
-	//controle de estado do oled0, tecla:
-	unsigned char oled0state=0, keyc=21, Tecla;
+	char ledIntensity[2] = "50";
+	//controle de tempo para oled7:
+	unsigned int oled7time=0, tecladotime=0;
+	//controle de estado da tecla:
+	unsigned char Tecla;
 	//Configura o clock para utilizar o xtal interno de 16MHz com PLL para 80MHz
 	SysClock = SysCtlClockFreqSet(SYSCTL_OSC_INT | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_320, 80000000);
 	//executa configuração e inicialização do SysTick
@@ -80,8 +80,6 @@ int main(void)
 	PortL_setup();
 	PortM_setup();
 	PortN_setup();
-	//Tempo de 5s antes de começar o Blinky:
-	//oled0time=SysTicks1ms+2000;
 	//Inicializa periférico I2C0:
 	I2C0_config();
 	//config 128x64:	
@@ -105,7 +103,7 @@ int main(void)
 	//Escreve String no Oled7 x,y I=invertido
 	OLED7_sendStrXYI("brilho do LED:", 1, 0);
 	//Escreve String no Oled7 x,y I=invertido
-	OLED7_sendStrXYI("99%", 2, 6);
+	OLED7_sendStrXYI("  %", 2, 6);
 	//Escreve String no Oled7 x,y I=invertido
 	OLED7_sendStrXYI("Tecla: [ ]", 3, 0);
 	//Escreve Caractere na posição x,y I=invertido
@@ -130,17 +128,23 @@ int main(void)
 		}
 		//Varre teclado Matricial 4x4
 		Tecla=VarreTeclado();
-		//Intensidade do LED -> simulada
-		strcpy(ledIntensity, "50");
 	  //Caso nenhuma tecla
 		if (Tecla==0) Tecla='?';
-		//controle temporal do oled0
+		//Determina intensidade do PWM caso tenha recebido uma tecla valida
+		if (Tecla != '?' && Tecla != '#' && Tecla != '*') pwmIntensity(Tecla, ledIntensity);
+		//controle temporal do teclado
 		if (SysTicks1ms>=tecladotime)
     {
 			//tempo do teclado recebe o tempo atual + o tempo futuro para entrar novamente no if (100ms)
       tecladotime=SysTicks1ms+100;
 			//Escreve Caractere na posição x,y I=invertido
       OLED7_sendCharXYI(Tecla, 3, 8);
+		}
+		//controle temporal do oled7 - Atualização Intensidade Led no olde7
+    if (SysTicks1ms>=oled7time)
+    {
+			//tempo do oled7 recebe o tempo atual + o tempo futuro para entrar novamente no if (100ms)
+			oled7time=SysTicks1ms+100;
 			//Escreve intensidade do led
 			OLED7_sendStrXYI(ledIntensity, 2, 6);
 		}
@@ -364,4 +368,124 @@ void I2C7_sendMultipleBytes(uint8_t slave_addr, uint8_t numOfBytes, char by[])
 	I2CMasterDataPut(I2C7_BASE, by[numOfBytes - 1]);
 	I2CMasterControl(I2C7_BASE, I2C_MASTER_CMD_BURST_SEND_FINISH);
 	while (I2CMasterBusy(I2C7_BASE));
+}
+
+void pwmIntensity(unsigned char Tecla, char *ledIntensity)
+{
+	unsigned short pwm0Now;
+	switch (Tecla)
+	{
+		// 0% de intensidade do pwm
+		case '0':
+			pwm0Now = 1;
+			ledIntensity[0] = '0';
+			ledIntensity[1] = '0';
+			break;
+		// 10% de intensidade do pwm
+		case '1':
+			pwm0Now = 2400/10;
+			ledIntensity[0] = '1';
+			ledIntensity[1] = '0';
+			break;
+		// 20% de intensidade do pwm
+		case '2':
+			pwm0Now = (2400/10)*2;
+			ledIntensity[0] = '2';
+			ledIntensity[1] = '0';
+			break;
+		// 30% de intensidade do pwm
+		case '3':
+			pwm0Now = (2400/10)*3;
+			ledIntensity[0] = '3';
+			ledIntensity[1] = '0';
+			break;
+		// 40% de intensidade do pwm
+		case '4':
+			pwm0Now = (2400/10)*4;
+			ledIntensity[0] = '4';
+			ledIntensity[1] = '0';
+			break;
+		// 50% de intensidade do pwm
+		case '5':
+			pwm0Now = (2400/10)*5;
+			ledIntensity[0] = '5';
+			ledIntensity[1] = '0';
+			break;
+		// 60% de intensidade do pwm
+		case '6':
+			pwm0Now = (2400/10)*6;
+			ledIntensity[0] = '6';
+			ledIntensity[1] = '0';
+			break;
+		// 70% de intensidade do pwm
+		case '7':
+			pwm0Now = (2400/10)*7;
+			ledIntensity[0] = '7';
+			ledIntensity[1] = '0';
+			break;
+		// 80% de intensidade do pwm
+		case '8':
+			pwm0Now = (2400/10)*8;
+			ledIntensity[0] = '8';
+			ledIntensity[1] = '0';
+			break;
+		// 90% de intensidade do pwm
+		case '9':
+			pwm0Now = (2400/10)*9;
+			ledIntensity[0] = '9';
+			ledIntensity[1] = '0';
+			break;
+		// +5% de intensidade do pwm
+		case 'A':
+			// Verifica a porcenagem atual e adiciona 5%
+			pwm0Now = (2400/10)*(ledIntensity[0] - 48) + (2400/100)*(ledIntensity[1] - 48) + (2400/100)*5;
+			ledIntensity[1] += 5;
+			if (ledIntensity[1] > 57)
+			{
+				ledIntensity[0] += 1;
+				ledIntensity[1] -= 10;
+			}
+			break;
+		// -5% de intensidade do pwm
+		case 'B':
+			// Verifica a porcenagem atual e remove 5%
+			pwm0Now = (2400/10)*(ledIntensity[0] - 48) + (2400/100)*(ledIntensity[1] - 48) - (2400/100)*5;
+			ledIntensity[1] -= 5;
+			if (ledIntensity[1] < 48)
+			{
+				ledIntensity[0] -= 1;
+				ledIntensity[1] += 10;
+			}
+			break;
+		// +1% de intensidade do pwm
+		case 'C':
+			// Verifica a porcenagem atual e adiciona 1%
+			pwm0Now = (2400/10)*(ledIntensity[0] - 48) + (2400/100)*(ledIntensity[1] - 48) + (2400/100);
+			ledIntensity[1] += 1;
+			if (ledIntensity[1] > 57)
+			{
+				ledIntensity[0] += 1;
+				ledIntensity[1] -= 10;
+			}
+			break;
+		// -1% de intensidade do pwm
+		case 'D':
+			// Verifica a porcenagem atual e remove 1%
+			pwm0Now = (2400/10)*(ledIntensity[0] - 48) + (2400/100)*(ledIntensity[1] - 48) - (2400/100);
+			ledIntensity[1] -= 1;
+			if (ledIntensity[1] < 48)
+			{
+				ledIntensity[0] -= 1;
+				ledIntensity[1] += 10;
+			}
+			break;
+	}
+	// Caso o valor chegue/ultrapasse 100% => pwm0Now = 99%
+	if (pwm0Now >= 2400) pwm0Now = (2400/100)*99;
+	// Caso o valor chegue/ultrapasse 0% => pwm0Now = 1% ~= 0%
+	else if (pwm0Now <= 0) pwm0Now = 1;
+	// Configurando duty cycle do PWM0.
+  PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, pwm0Now);
+	// Configurando duty cycle do PWM1.
+	PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, 2400-pwm0Now);
 }

@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\MultiplosPerifericos.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\MultiplosPerifericos.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Fri May 31 23:07:56 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Sat Jun 01 00:31:34 2024
 <BR><P>
 <H3>Maximum Stack Usage =        128 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -72,10 +72,6 @@ Global Symbols
 <P><STRONG><a name="[5c]"></a>__rt_final_cpp</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry10a.o(.ARM.Collect$$$$0000000F))
 
 <P><STRONG><a name="[5d]"></a>__rt_final_exit</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, entry11a.o(.ARM.Collect$$$$00000011))
-
-<P><STRONG><a name="[56]"></a>strcpy</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, strcpy.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-</UL>
 
 <P><STRONG><a name="[a]"></a>__scatterload</STRONG> (Thumb, 28 bytes, Stack size 0 bytes, init.o(.text))
 <BR><BR>[Calls]<UL><LI><a href="#[b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main_after_scatterload
@@ -434,7 +430,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[39]"></a>PWMPulseWidthSet</STRONG> (Thumb, 32 bytes, Stack size 0 bytes, pwm.o(i.PWMPulseWidthSet))
-<BR><BR>[Called By]<UL><LI><a href="#[36]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PWM0_setup
+<BR><BR>[Called By]<UL><LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwmIntensity
+<LI><a href="#[36]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PWM0_setup
 </UL>
 
 <P><STRONG><a name="[3c]"></a>PortF_setup</STRONG> (Thumb, 34 bytes, Stack size 8 bytes, main.o(i.PortF_setup))
@@ -696,7 +693,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[4]"></a>main</STRONG> (Thumb, 296 bytes, Stack size 16 bytes, main.o(i.main))
+<P><STRONG><a name="[4]"></a>main</STRONG> (Thumb, 318 bytes, Stack size 16 bytes, main.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = main &rArr; OLED7_sendStrXYI &rArr; OLED7_sendCharXYI &rArr; OLED7_setXY &rArr; OLED7_command &rArr; I2C7_sendMultipleBytes
 </UL>
 <BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;executaComando
@@ -712,6 +709,7 @@ Global Symbols
 <LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OLED7_clearDisplay
 <LI><a href="#[2f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OLED7_Init
 <LI><a href="#[2c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;OLED0_Init
+<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pwmIntensity
 <LI><a href="#[47]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetupUart
 <LI><a href="#[41]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SetupSystick
 <LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PortN_setup
@@ -721,10 +719,17 @@ Global Symbols
 <LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C7_config
 <LI><a href="#[1d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C0_config
 <LI><a href="#[19]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;I2C0_UpdateRelayStatus
-<LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> entry9a.o(.ARM.Collect$$$$0000000B)
-</UL><P>
+</UL>
+<P><STRONG><a name="[56]"></a>pwmIntensity</STRONG> (Thumb, 418 bytes, Stack size 16 bytes, main.o(i.pwmIntensity))
+<BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = pwmIntensity
+</UL>
+<BR>[Calls]<UL><LI><a href="#[39]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PWMPulseWidthSet
+</UL>
+<BR>[Called By]<UL><LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+<P>
 <H3>
 Local Symbols
 </H3>
