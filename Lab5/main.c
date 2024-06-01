@@ -56,7 +56,8 @@ void PortL_setup(void);
 void PortM_setup(void);
 void PortN_setup(void);
 void I2C0_UpdateRelayStatus(bool *statusRelays);
-void pwmIntensity(unsigned char Tecla, char *ledIntensity);
+bool pwmIntensity(unsigned char Tecla, char *ledIntensity);
+uint32_t PortL_Input(void);
 
 
 int main(void)
@@ -71,6 +72,8 @@ int main(void)
 	unsigned int oled7time=0, tecladotime=0;
 	//controle de estado da tecla:
 	unsigned char Tecla;
+	//controle de alteracao do pwm
+	bool pwmChanged = false;
 	//Configura o clock para utilizar o xtal interno de 16MHz com PLL para 80MHz
 	SysClock = SysCtlClockFreqSet(SYSCTL_OSC_INT | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_320, 80000000);
 	//executa configuração e inicialização do SysTick
@@ -131,7 +134,9 @@ int main(void)
 	  //Caso nenhuma tecla
 		if (Tecla==0) Tecla='?';
 		//Determina intensidade do PWM caso tenha recebido uma tecla valida
-		if (Tecla != '?' && Tecla != '#' && Tecla != '*') pwmIntensity(Tecla, ledIntensity);
+		if (Tecla != '?' && Tecla != '#' && Tecla != '*' && !pwmChanged) pwmChanged = pwmIntensity(Tecla, ledIntensity);
+		//Pressionou uma tecla que nao altera o pwm
+		if (Tecla == '?' || Tecla == '#' || Tecla == '*') pwmChanged = false;
 		//controle temporal do teclado
 		if (SysTicks1ms>=tecladotime)
     {
@@ -370,9 +375,9 @@ void I2C7_sendMultipleBytes(uint8_t slave_addr, uint8_t numOfBytes, char by[])
 	while (I2CMasterBusy(I2C7_BASE));
 }
 
-void pwmIntensity(unsigned char Tecla, char *ledIntensity)
+bool pwmIntensity(unsigned char Tecla, char *ledIntensity)
 {
-	unsigned short pwm0Now;
+	short pwm0Now;
 	switch (Tecla)
 	{
 		// 0% de intensidade do pwm
@@ -439,53 +444,203 @@ void pwmIntensity(unsigned char Tecla, char *ledIntensity)
 		case 'A':
 			// Verifica a porcenagem atual e adiciona 5%
 			pwm0Now = (2400/10)*(ledIntensity[0] - 48) + (2400/100)*(ledIntensity[1] - 48) + (2400/100)*5;
-			ledIntensity[1] += 5;
-			if (ledIntensity[1] > 57)
+			// Caso o valor chegue/ultrapasse 100% => pwm0Now = 99%
+			if (pwm0Now >= 2400) 
 			{
-				ledIntensity[0] += 1;
-				ledIntensity[1] -= 10;
+				pwm0Now = (2400/100)*99;
+				ledIntensity[0] = '9';
+				ledIntensity[1] = '9';
+			}
+			else
+			{
+				ledIntensity[1] += 5;
+				if (ledIntensity[1] > 57)
+				{
+					ledIntensity[0] += 1;
+					ledIntensity[1] -= 10;
+				}
 			}
 			break;
 		// -5% de intensidade do pwm
 		case 'B':
 			// Verifica a porcenagem atual e remove 5%
 			pwm0Now = (2400/10)*(ledIntensity[0] - 48) + (2400/100)*(ledIntensity[1] - 48) - (2400/100)*5;
-			ledIntensity[1] -= 5;
-			if (ledIntensity[1] < 48)
+			// Caso o valor chegue/ultrapasse 0% => pwm0Now = 1% ~= 0%
+			if (pwm0Now <= 0)
 			{
-				ledIntensity[0] -= 1;
-				ledIntensity[1] += 10;
+				pwm0Now = 1;
+				ledIntensity[0] = '0';
+				ledIntensity[1] = '0';
+			}
+			else
+			{
+				ledIntensity[1] -= 5;
+				if (ledIntensity[1] < 48)
+				{
+					ledIntensity[0] -= 1;
+					ledIntensity[1] += 10;
+				}
 			}
 			break;
 		// +1% de intensidade do pwm
 		case 'C':
 			// Verifica a porcenagem atual e adiciona 1%
 			pwm0Now = (2400/10)*(ledIntensity[0] - 48) + (2400/100)*(ledIntensity[1] - 48) + (2400/100);
-			ledIntensity[1] += 1;
-			if (ledIntensity[1] > 57)
+			// Caso o valor chegue/ultrapasse 100% => pwm0Now = 99%
+			if (pwm0Now >= 2400) 
 			{
-				ledIntensity[0] += 1;
-				ledIntensity[1] -= 10;
+				pwm0Now = (2400/100)*99;
+				ledIntensity[0] = '9';
+				ledIntensity[1] = '9';
+			}
+			else
+			{
+				ledIntensity[1] += 1;
+				if (ledIntensity[1] > 57)
+				{
+					ledIntensity[0] += 1;
+					ledIntensity[1] -= 10;
+				}
 			}
 			break;
 		// -1% de intensidade do pwm
 		case 'D':
 			// Verifica a porcenagem atual e remove 1%
 			pwm0Now = (2400/10)*(ledIntensity[0] - 48) + (2400/100)*(ledIntensity[1] - 48) - (2400/100);
-			ledIntensity[1] -= 1;
-			if (ledIntensity[1] < 48)
+			// Caso o valor chegue/ultrapasse 0% => pwm0Now = 1% ~= 0%
+			if (pwm0Now <= 0)
 			{
-				ledIntensity[0] -= 1;
-				ledIntensity[1] += 10;
+				pwm0Now = 1;
+				ledIntensity[0] = '0';
+				ledIntensity[1] = '0';
+			}
+			else
+			{
+				ledIntensity[1] -= 1;
+				if (ledIntensity[1] < 48)
+				{
+					ledIntensity[0] -= 1;
+					ledIntensity[1] += 10;
+				}
 			}
 			break;
 	}
-	// Caso o valor chegue/ultrapasse 100% => pwm0Now = 99%
-	if (pwm0Now >= 2400) pwm0Now = (2400/100)*99;
-	// Caso o valor chegue/ultrapasse 0% => pwm0Now = 1% ~= 0%
-	else if (pwm0Now <= 0) pwm0Now = 1;
 	// Configurando duty cycle do PWM0.
   PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, pwm0Now);
 	// Configurando duty cycle do PWM1.
 	PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, 2400-pwm0Now);
+	return 1;
+}
+
+// Função para ler tecla pressionada no teclado matricial com debounce
+uint32_t PortL_Input(void)
+{
+	//controle via programação de anti-debouncing
+	bool bt1flag=false, bt2flag=false, bt3flag=false, bt4flag=false;
+	//controle de tempo para botão
+  unsigned int bt1time=0,bt2time=0, bt3time=0, bt4time=0;
+	//chaves pressionadas
+	int32_t button = 0;
+	
+	//ant-debouncig do botão 1
+	if (bt1flag) 
+	{
+		//Botão1 liberado !!!
+		if (GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_0)&&SysTicks1ms>=bt1time)
+		{
+			//botão liberado
+      bt1flag=false;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+      bt1time=SysTicks1ms*1000+55;				 
+		}
+	}
+	else
+	{
+		//botão1 pressionado !!!
+		if ((GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_0)==0)&&(SysTicks1ms>=bt1time))
+		{
+			//botão pressionado
+			bt1flag=true;
+			//55ms para liberar estado do botão ... tempo anti-debouncing
+	    bt1time=SysTicks1ms+55;
+			//leitura do L0
+			button = 0x0E;
+		}
+	}
+	//ant-debouncig do botão 2
+  if (bt2flag) 
+	{
+		//botão2 liberado !!!
+	  if (GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_1)&&(SysTicks1ms>=bt2time))
+	  {
+			//botão liberado
+      bt2flag=false;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+      bt2time=SysTicks1ms+55;				 
+		}
+	}
+	else
+	{
+		//botão2 pressionado !!!
+	  if ((GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_1)==0)&&(SysTicks1ms>=bt2time))
+	  {
+			//botão pressionado
+	    bt2flag=true;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+	    bt2time=SysTicks1ms+55;				 
+      //leitura do L1
+			button = 0x0D;
+		}
+	}
+	//ant-debouncig do botão 3
+  if (bt3flag) 
+	{
+		//botão3 liberado !!!
+	  if (GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_2)&&(SysTicks1ms>=bt3time))
+	  {
+			//botão liberado
+      bt3flag=false;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+      bt3time=SysTicks1ms+55;				 
+		}
+	}
+	else
+	{
+		//botão3 pressionado !!!
+	  if ((GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_2)==0)&&(SysTicks1ms>=bt3time))
+	  {
+			//botão pressionado
+	    bt3flag=true;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+	    bt3time=SysTicks1ms+55;				 
+      //leitura do L2
+			button = 0x0B;
+		}
+	}
+	//ant-debouncig do botão 4
+  if (bt4flag) 
+	{
+		//botão4 liberado !!!
+	  if (GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_3)&&(SysTicks1ms>=bt4time))
+	  {
+			//botão liberado
+      bt4flag=false;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+      bt4time=SysTicks1ms+55;				 
+		}
+	}
+	else
+	{
+		//botão4 pressionado !!!
+	  if ((GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_3)==0)&&(SysTicks1ms>=bt4time))
+	  {
+			//botão pressionado
+	    bt4flag=true;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+	    bt4time=SysTicks1ms+55;				 
+      //leitura do L3
+			button = 0x07;
+		}
+	}
+	return button;
 }

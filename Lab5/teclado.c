@@ -8,6 +8,10 @@
 #include "driverlib/interrupt.h"
 #include "driverlib/pin_map.h"
 
+
+//Protótipo de função criada na main
+uint32_t PortL_Input(void);
+
 // -------------------------------------------------------------------------------
 // Função AtivaColuna
 // Habilita a coluna respectiva
@@ -48,7 +52,7 @@ void AtivaColuna(uint8_t coluna)
 uint8_t LeLinha(void)
 {
 	  uint32_t portL_input;
-		portL_input = GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3);
+		portL_input = PortL_Input();
 	  switch(portL_input)
 		{
 			case 0x0E:  //Port L0
