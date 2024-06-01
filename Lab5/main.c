@@ -53,11 +53,11 @@ void I2C7_sendMultipleBytes(uint8_t slave_addr, uint8_t numOfBytes, char by[]);
 void PortF_setup(void);
 void PWM0_setup(void);
 void PortL_setup(void);
+uint32_t PortL_Input(void);
 void PortM_setup(void);
 void PortN_setup(void);
 void I2C0_UpdateRelayStatus(bool *statusRelays);
 bool pwmIntensity(unsigned char Tecla, char *ledIntensity);
-uint32_t PortL_Input(void);
 
 
 int main(void)
@@ -258,6 +258,119 @@ while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOL)) {/*Espera habilitar o port*/}
 GPIOPinTypeGPIOInput(GPIO_PORTL_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3);
 //configura os pinos para 2mA como limite de corrente e com week pull-up
 GPIOPadConfigSet(GPIO_PORTL_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
+}
+
+// Função para ler tecla pressionada no teclado matricial com debounce
+uint32_t PortL_Input(void)
+{
+	//controle via programação de anti-debouncing
+	bool bt1flag=false, bt2flag=false, bt3flag=false, bt4flag=false;
+	//controle de tempo para botão
+  unsigned int bt1time=0,bt2time=0, bt3time=0, bt4time=0;
+	//chaves pressionadas
+	int32_t button = 0;
+	
+	//ant-debouncig do botão 1
+	if (bt1flag) 
+	{
+		//Botão1 liberado !!!
+		if (GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_0)&&SysTicks1ms>=bt1time)
+		{
+			//botão liberado
+      bt1flag=false;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+      bt1time=SysTicks1ms*1000+55;				 
+		}
+	}
+	else
+	{
+		//botão1 pressionado !!!
+		if ((GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_0)==0)&&(SysTicks1ms>=bt1time))
+		{
+			//botão pressionado
+			bt1flag=true;
+			//55ms para liberar estado do botão ... tempo anti-debouncing
+	    bt1time=SysTicks1ms+55;
+			//leitura do L0
+			button = 0x0E;
+		}
+	}
+	//ant-debouncig do botão 2
+  if (bt2flag) 
+	{
+		//botão2 liberado !!!
+	  if (GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_1)&&(SysTicks1ms>=bt2time))
+	  {
+			//botão liberado
+      bt2flag=false;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+      bt2time=SysTicks1ms+55;				 
+		}
+	}
+	else
+	{
+		//botão2 pressionado !!!
+	  if ((GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_1)==0)&&(SysTicks1ms>=bt2time))
+	  {
+			//botão pressionado
+	    bt2flag=true;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+	    bt2time=SysTicks1ms+55;				 
+      //leitura do L1
+			button = 0x0D;
+		}
+	}
+	//ant-debouncig do botão 3
+  if (bt3flag) 
+	{
+		//botão3 liberado !!!
+	  if (GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_2)&&(SysTicks1ms>=bt3time))
+	  {
+			//botão liberado
+      bt3flag=false;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+      bt3time=SysTicks1ms+55;				 
+		}
+	}
+	else
+	{
+		//botão3 pressionado !!!
+	  if ((GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_2)==0)&&(SysTicks1ms>=bt3time))
+	  {
+			//botão pressionado
+	    bt3flag=true;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+	    bt3time=SysTicks1ms+55;				 
+      //leitura do L2
+			button = 0x0B;
+		}
+	}
+	//ant-debouncig do botão 4
+  if (bt4flag) 
+	{
+		//botão4 liberado !!!
+	  if (GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_3)&&(SysTicks1ms>=bt4time))
+	  {
+			//botão liberado
+      bt4flag=false;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+      bt4time=SysTicks1ms+55;				 
+		}
+	}
+	else
+	{
+		//botão4 pressionado !!!
+	  if ((GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_3)==0)&&(SysTicks1ms>=bt4time))
+	  {
+			//botão pressionado
+	    bt4flag=true;
+	    //55ms para liberar estado do botão ... tempo anti-debouncing
+	    bt4time=SysTicks1ms+55;				 
+      //leitura do L3
+			button = 0x07;
+		}
+	}
+	return button;
 }
 
 //função para setup GPIO M
@@ -530,117 +643,4 @@ bool pwmIntensity(unsigned char Tecla, char *ledIntensity)
 	// Configurando duty cycle do PWM1.
 	PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, 2400-pwm0Now);
 	return 1;
-}
-
-// Função para ler tecla pressionada no teclado matricial com debounce
-uint32_t PortL_Input(void)
-{
-	//controle via programação de anti-debouncing
-	bool bt1flag=false, bt2flag=false, bt3flag=false, bt4flag=false;
-	//controle de tempo para botão
-  unsigned int bt1time=0,bt2time=0, bt3time=0, bt4time=0;
-	//chaves pressionadas
-	int32_t button = 0;
-	
-	//ant-debouncig do botão 1
-	if (bt1flag) 
-	{
-		//Botão1 liberado !!!
-		if (GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_0)&&SysTicks1ms>=bt1time)
-		{
-			//botão liberado
-      bt1flag=false;
-	    //55ms para liberar estado do botão ... tempo anti-debouncing
-      bt1time=SysTicks1ms*1000+55;				 
-		}
-	}
-	else
-	{
-		//botão1 pressionado !!!
-		if ((GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_0)==0)&&(SysTicks1ms>=bt1time))
-		{
-			//botão pressionado
-			bt1flag=true;
-			//55ms para liberar estado do botão ... tempo anti-debouncing
-	    bt1time=SysTicks1ms+55;
-			//leitura do L0
-			button = 0x0E;
-		}
-	}
-	//ant-debouncig do botão 2
-  if (bt2flag) 
-	{
-		//botão2 liberado !!!
-	  if (GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_1)&&(SysTicks1ms>=bt2time))
-	  {
-			//botão liberado
-      bt2flag=false;
-	    //55ms para liberar estado do botão ... tempo anti-debouncing
-      bt2time=SysTicks1ms+55;				 
-		}
-	}
-	else
-	{
-		//botão2 pressionado !!!
-	  if ((GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_1)==0)&&(SysTicks1ms>=bt2time))
-	  {
-			//botão pressionado
-	    bt2flag=true;
-	    //55ms para liberar estado do botão ... tempo anti-debouncing
-	    bt2time=SysTicks1ms+55;				 
-      //leitura do L1
-			button = 0x0D;
-		}
-	}
-	//ant-debouncig do botão 3
-  if (bt3flag) 
-	{
-		//botão3 liberado !!!
-	  if (GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_2)&&(SysTicks1ms>=bt3time))
-	  {
-			//botão liberado
-      bt3flag=false;
-	    //55ms para liberar estado do botão ... tempo anti-debouncing
-      bt3time=SysTicks1ms+55;				 
-		}
-	}
-	else
-	{
-		//botão3 pressionado !!!
-	  if ((GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_2)==0)&&(SysTicks1ms>=bt3time))
-	  {
-			//botão pressionado
-	    bt3flag=true;
-	    //55ms para liberar estado do botão ... tempo anti-debouncing
-	    bt3time=SysTicks1ms+55;				 
-      //leitura do L2
-			button = 0x0B;
-		}
-	}
-	//ant-debouncig do botão 4
-  if (bt4flag) 
-	{
-		//botão4 liberado !!!
-	  if (GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_3)&&(SysTicks1ms>=bt4time))
-	  {
-			//botão liberado
-      bt4flag=false;
-	    //55ms para liberar estado do botão ... tempo anti-debouncing
-      bt4time=SysTicks1ms+55;				 
-		}
-	}
-	else
-	{
-		//botão4 pressionado !!!
-	  if ((GPIOPinRead(GPIO_PORTL_BASE,GPIO_PIN_3)==0)&&(SysTicks1ms>=bt4time))
-	  {
-			//botão pressionado
-	    bt4flag=true;
-	    //55ms para liberar estado do botão ... tempo anti-debouncing
-	    bt4time=SysTicks1ms+55;				 
-      //leitura do L3
-			button = 0x07;
-		}
-	}
-	return button;
 }

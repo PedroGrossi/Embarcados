@@ -56,15 +56,6 @@ int8_t executaComando(uint8_t *commandBuffer, bool *statusRelays)
 					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, statusRelays[2]<<4); // atualiza o status do relé 2
 				  AnsOneRele(2, statusRelays[2]); // envia resposta de atualização
 					break;
-				case '3':
-					// Será uilizado para PWM -> função desativada
-					/*
-					if (commandBuffer[3] == '1') statusReles[3] = true; // ligar relé 3
-					else statusReles[3] = false; //desligar relé 3
-					GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, statusReles[3]); // atualiza o status do relé 3
-				  AnsOneRele(3, statusReles[3]); // envia resposta de atualização
-					*/
-					break;
 				default:
 					// Caso de led invalido -> comando invalido
 					retorno = -1;
@@ -84,12 +75,10 @@ int8_t executaComando(uint8_t *commandBuffer, bool *statusRelays)
 				statusRelays[0] = true;
 				statusRelays[1] = true;
 				statusRelays[2] = true;
-				// statusReles[3] = true; // Será uilizado para PWM -> função desativada
 				// atualiza o status de todos os relés
 				GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, statusRelays[0]<<1);
 				GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, statusRelays[1]);
 				GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, statusRelays[2]<<4);
-				// GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, statusReles[3]); // Será uilizado para PWM -> função desativada
 				// envia resposta de atualização
 				UARTStringSend("@TX1", 4);
 			}
@@ -99,12 +88,10 @@ int8_t executaComando(uint8_t *commandBuffer, bool *statusRelays)
 				statusRelays[0] = false;
 				statusRelays[1] = false;
 				statusRelays[2] = false;
-				// statusReles[3] = false; // Será uilizado para PWM -> função desativada
 				// atualiza o status de todos os relés
 				GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1, statusRelays[0]<<1);
 				GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_0, statusRelays[1]);
 				GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_4, statusRelays[2]<<4);
-				// GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_0, statusReles[3]); // Será uilizado para PWM -> função desativada
 				// envia resposta de atualização
 				UARTStringSend("@TX0", 4);
 			}
@@ -134,14 +121,12 @@ void AnsOneRele(uint8_t relayNumber, bool relayStatus)
 		if (relayNumber == 0) UARTStringSend("@R01", 4);
 		else if (relayNumber == 1) UARTStringSend("@R11", 4);
 		else if (relayNumber == 2) UARTStringSend("@R21", 4);
-		// else if (relayNumber == 3) UARTStringSend("@R31", 4); // Será uilizado para PWM -> função desativada
 	}
 	else
 	{
 		if (relayNumber == 0) UARTStringSend("@R00", 4);
 		else if (relayNumber == 1) UARTStringSend("@R10", 4);
 		else if (relayNumber == 2) UARTStringSend("@R20", 4);
-		// else if (relayNumber == 3) UARTStringSend("@R30", 4); // Será uilizado para PWM -> função desativada
 	}
 }
 
@@ -155,7 +140,6 @@ void AnsStatus(bool *relayStatus)
 	if (relayStatus[0] == true) data += 8;
 	if (relayStatus[1] == true) data += 4;
 	if (relayStatus[2] == true) data += 2;
-	// if (statusReles[3] == true) data += 1; // Será uilizado para PWM -> função desativada
 	// Envia inicio da mesagem
 	UARTStringSend("@TS", 3);
 	// Envia status dos reles
