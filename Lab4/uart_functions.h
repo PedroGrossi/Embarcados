@@ -11,4 +11,4 @@
 #include <stdint.h>
 
 void UARTStringSend(const uint8_t *String, uint32_t tamanho);
-void UARTStringReceive(uint8_t *stringBuffer, uint8_t bufferSize);
+void UART_Interruption_Handler(void);

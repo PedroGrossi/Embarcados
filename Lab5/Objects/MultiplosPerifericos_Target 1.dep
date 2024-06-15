@@ -1,6 +1,6 @@
 Dependencies for Project 'MultiplosPerifericos', Target 'Target 1': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARM_Compiler_5.06u7
-F (.\main.c)(0x665B091D)(-c --cpu Cortex-M4.fp.sp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\TivaWare_C_Series-2.2.0.295 --c99-I.\RTE\_Target_1-IC:\Users\ph01g\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\ph01g\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="538" -D_RTE_ -DTM4C1294NCPDT -D_RTE_-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
+F (.\main.c)(0x666DB816)(-c --cpu Cortex-M4.fp.sp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\TivaWare_C_Series-2.2.0.295 --c99-I.\RTE\_Target_1-IC:\Users\ph01g\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\ph01g\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="538" -D_RTE_ -DTM4C1294NCPDT -D_RTE_-o .\objects\main.o --omf_browse .\objects\main.crf --depend .\objects\main.d)
 I (C:\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdint.h)(0x5E8ED772)
 I (C:\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdbool.h)(0x5E8ED772)
 I (..\TivaWare_C_Series-2.2.0.295\inc/hw_memmap.h)(0x66185BDC)
@@ -14,7 +14,7 @@ I (..\TivaWare_C_Series-2.2.0.295\driverlib/uart.h)(0x66185BD1)
 I (..\TivaWare_C_Series-2.2.0.295\driverlib/pwm.h)(0x66185BD1)
 I (..\TivaWare_C_Series-2.2.0.295\driverlib/i2c.h)(0x66185BD1)
 I (relay_functions.h)(0x665361C8)
-I (uart_functions.h)(0x66567C04)
+I (uart_functions.h)(0x666DB78E)
 I (i2c.h)(0x64F79596)
 I (ssd1306.h)(0x6512BC3C)
 I (bitmap.h)(0x6512D196)
@@ -26,8 +26,8 @@ I (C:\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdbool.h)(0x5E8ED772)
 I (..\TivaWare_C_Series-2.2.0.295\inc/hw_memmap.h)(0x66185BDC)
 I (..\TivaWare_C_Series-2.2.0.295\driverlib/debug.h)(0x66185BD1)
 I (..\TivaWare_C_Series-2.2.0.295\driverlib/gpio.h)(0x66185BD1)
-I (uart_functions.h)(0x66567C04)
-F (.\uart_functions.c)(0x66567BFD)(-c --cpu Cortex-M4.fp.sp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\TivaWare_C_Series-2.2.0.295 --c99-I.\RTE\_Target_1-IC:\Users\ph01g\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\ph01g\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="538" -D_RTE_ -DTM4C1294NCPDT -D_RTE_-o .\objects\uart_functions.o --omf_browse .\objects\uart_functions.crf --depend .\objects\uart_functions.d)
+I (uart_functions.h)(0x666DB78E)
+F (.\uart_functions.c)(0x666DB783)(-c --cpu Cortex-M4.fp.sp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ..\TivaWare_C_Series-2.2.0.295 --c99-I.\RTE\_Target_1-IC:\Users\ph01g\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\ph01g\AppData\Local\Arm\Packs\Keil\TM4C_DFP\1.1.0\Device\Include\TM4C129-D__UVISION_VERSION="538" -D_RTE_ -DTM4C1294NCPDT -D_RTE_-o .\objects\uart_functions.o --omf_browse .\objects\uart_functions.crf --depend .\objects\uart_functions.d)
 I (C:\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdint.h)(0x5E8ED772)
 I (C:\Keil_v5\ARM\ARM_Compiler_5.06u7\include\stdbool.h)(0x5E8ED772)
 I (..\TivaWare_C_Series-2.2.0.295\inc/hw_memmap.h)(0x66185BDC)

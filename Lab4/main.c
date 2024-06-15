@@ -26,15 +26,12 @@ Desenvolvido para a placa EK-TM4C1294XL utilizando o SDK TivaWare no KEIL
 static volatile unsigned int SysTicks1ms;
 //buffer de rx ...
 unsigned char rxbuffer[4];
-//buffer de tx ...
-unsigned char txbuffer[4];
 //variável para receber o retorno do cfg do clk
 uint32_t SysClock;
 
 //Protótipos de funções criadas no programa, código depois do main
 void SysTickIntHandler(void);
 void SetupSystick(void);
-void UART_Interruption_Handler(void);
 void SetupUart(void);
 
 void PortF_setup(void);
@@ -45,7 +42,7 @@ int main(void)
 	//variavel para o status dos reles -> inicializa com todos desligados
 	bool statusReles[4] = {false, false, false, false};
 	//variavel para tempo
-	unsigned int timeUART;
+	//unsigned int timeUART;
 	//Inicializar clock principal a 120MHz
   SysClock = SysCtlClockFreqSet((SYSCTL_XTAL_25MHZ | SYSCTL_OSC_MAIN | SYSCTL_USE_PLL | SYSCTL_CFG_VCO_240), 120000000);
 	//executa configuração e inicialização do SysTick
@@ -58,17 +55,14 @@ int main(void)
 	//loop infinito
   while (1)
 	{
-			// Aguarda comando pela uart
-			if(UARTCharsAvail(UART0_BASE))
-			{
-				// Aguarda receber toda o comando
-				timeUART = SysTicks1ms;
-				while (SysTicks1ms < timeUART+3){ /* aguarda 3 ciclos de clock */ }; 
-				// armazena comando no txbuffer respeitando tamanho do buffer
-				UARTStringReceive(txbuffer, 4);
-				// verifica comando recebido, caso seja um comando aparentemente valido tenta executar
-				if (txbuffer[0] == '#') executaComando(txbuffer, statusReles);
-			}
+		// verifica comando recebido, caso seja um comando aparentemente valido tenta executar
+		if(rxbuffer[0] == '#')
+		{
+			//executa o comando recebido
+			executaComando(rxbuffer, statusReles);
+			//"limpa buffer"
+			rxbuffer[0] = 0;
+		}	
 	}
 }
 
@@ -94,21 +88,6 @@ void SetupSystick(void)
   SysTickEnable();
 }
 
-//função de tratamento da interrupção do uart
-void UART_Interruption_Handler(void) 
-{
-  uint8_t last;
-  //limpar IRQ exec
-  UARTIntClear(UART0_BASE,UARTIntStatus(UART0_BASE,true));
-  // Ler o próximo caractere na uart.
-  last = (uint8_t)UARTCharGetNonBlocking(UART0_BASE);
-  //rotacionar buffer circular
-  rxbuffer[0]=rxbuffer[1];
-  rxbuffer[1]=rxbuffer[2];
-  rxbuffer[2]=rxbuffer[3];
-  rxbuffer[3]=last;
-}
-
 //função para configurar e inicializar o periférico Uart a 115.2k,8,n,1
 void SetupUart(void)
 {
@@ -116,6 +95,7 @@ void SetupUart(void)
   SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
   while(!SysCtlPeripheralReady(SYSCTL_PERIPH_UART0));
   UARTConfigSetExpClk(UART0_BASE, SysClock, 115200, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));
+	UARTFIFODisable(UART0_BASE);
   UARTIntEnable(UART0_BASE,UART_INT_RX);
   UARTIntRegister(UART0_BASE,UART_Interruption_Handler);
   SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
