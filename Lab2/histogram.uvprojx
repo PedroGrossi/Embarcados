@@ -404,6 +404,11 @@
               <FileType>1</FileType>
               <FilePath>.\imageFunctions.c</FilePath>
             </File>
+            <File>
+              <FileName>imageFunctionsASM.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\imageFunctionsASM.s</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

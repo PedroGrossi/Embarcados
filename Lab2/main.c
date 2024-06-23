@@ -7,7 +7,6 @@ Desenvolvido para a placa EK-TM4C1294XL utilizando o SDK TivaWare no KEIL
 #define PART_TM4C1294NCPDT 1
 
 #include <stdint.h>
-#include <stdio.h>
 #include <stdbool.h>
 #include "inc/hw_memmap.h"
 #include "driverlib/debug.h"
@@ -20,12 +19,22 @@ Desenvolvido para a placa EK-TM4C1294XL utilizando o SDK TivaWare no KEIL
 #include "imageFunctions.h"
 #include "images.h"
 
+// Definindo tipo de ponteiro para função
+typedef uint16_t (*fnc_ram_t)(uint16_t, uint16_t, const uint8_t *, uint16_t *);
+
+// Buffers para armazenar funções na RAM
+unsigned long ram_buffer_C[60/4];
+unsigned long ram_buffer_ASM[68/4];
+
 //variável que conta os ticks(1ms) - Volatile não permite o compilador otimizar o código 
 static volatile unsigned int SysTicks1ms;
 //buffer de rx ...
 unsigned char rxbuffer[4];
 //variável para receber o retorno do cfg do clk
 uint32_t SysClock;
+
+//Prototipo de função assembly
+uint16_t EightBitHistogram_ASM(uint16_t width, uint16_t height, const uint8_t *p_image, uint16_t *p_histogram); 
 
 //Protótipos de funções criadas no programa, código depois do main
 void SysTickIntHandler(void);
@@ -34,6 +43,8 @@ void UART_Interruption_Handler(void);
 void SetupSystick(void);
 void SetupUart(void);
 void UARTNumberSend(uint16_t number);
+void copyToRam(void* dst, void* src, int size);
+
 
 int main(void)
 {
@@ -47,14 +58,23 @@ int main(void)
 	// histogram array initialized with all values in 0
 	static uint16_t histogram[256] = {0}; 
 	// Estudar como aumentar o tamanho da pilha de variaveis locais -> startup
+	
+	// Copiando funções para RAM
+	copyToRam((void*)ram_buffer_C, (void*)((int)EightBitHistogram_C-1), 60);
+	copyToRam((void*)ram_buffer_ASM, (void*)((int)EightBitHistogram_ASM-1), 68);
+	
+	// Ponteiros apontam para posição inicial do buffer com correção do THUMB2
+	fnc_ram_t EightBitHistogram_C_ram = (fnc_ram_t)((int)ram_buffer_C+1);
+	fnc_ram_t EightBitHistogram_ASM_ram = (fnc_ram_t)((int)ram_buffer_ASM+1);
 
-	// call function to image 0
-	uint16_t image_size = EightBitHistogram_C(width0, height0, p_start_image0, histogram);
+	// call function to image 0 -> C function -> executada da ram
+	uint16_t image_size = EightBitHistogram_C_ram(width0, height0, p_start_image0, histogram);
+	uint16_t k;
 	
 	if(image_size!=0){
 		// send histogram data - image0
 		UARTStringSend("X,Y\r\n", 5);
-		for (uint16_t k=0; k<256; k++)
+		for (k=0; k<256; k++)
 		{
 			if(histogram[k]!=0){
 				UARTNumberSend(k);
@@ -72,13 +92,13 @@ int main(void)
 		UARTStringSend("Image0 is bigger than 64K\r\n", 27);
 	};
 	
-	// call function to image 1
-	image_size = EightBitHistogram_C(width1, height1, p_start_image1, histogram);
+	// call function to image 1 -> assembly function -> executada da ram
+	image_size = EightBitHistogram_ASM_ram(width1, height1, p_start_image1, histogram);
 	
 	if(image_size!=0){
 		// send histogram data - image0
 		UARTStringSend("X,Y\r\n", 5);
-		for (uint16_t k=0; k<256; k++)
+		for (k=0; k<256; k++)
 		{
 			if(histogram[k]!=0){
 				UARTNumberSend(k);
@@ -168,4 +188,15 @@ void SetupUart(void)
   GPIOPinConfigure(GPIO_PA0_U0RX);
   GPIOPinConfigure(GPIO_PA1_U0TX);
   GPIOPinTypeUART(GPIO_PORTA_BASE,(GPIO_PIN_0|GPIO_PIN_1));
+}
+
+//função para copiar para a RAM
+void copyToRam(void* dst, void* src, int size)
+{
+	unsigned char *src8 = src;
+	unsigned char *dst8 = dst;
+	while(size--)
+	{
+		*dst8++  = *src8++;
+	}
 }
