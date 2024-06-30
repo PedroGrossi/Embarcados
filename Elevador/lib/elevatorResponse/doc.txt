@@ -1,0 +1,1 @@
+Biblioteca para tratar os comandos recebidos pelo simulador de elevador
