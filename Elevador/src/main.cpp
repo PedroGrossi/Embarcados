@@ -26,7 +26,7 @@ char rx[13],tx[4],last;
 /* contador genérico: */
 int i;
 /* flags de eventos: */
-char flagcabine,flagcorredorup,flagcorredordown;
+char flagcabine,flagcorredorup,flagcorredordown, flagqueueinsert;
 /* contadores de eventos: */
 char n_btc_in,n_seq_up,n_seq_down;
 /* temporizadores de sftw: */
@@ -57,6 +57,7 @@ void setup()
   flagcabine=0;
   flagcorredorup=0;
   flagcorredordown=0;
+  flagqueueinsert=0;
   n_btc_in=0;
   n_seq_up=0;
   n_seq_down=0;
@@ -92,7 +93,6 @@ void setup()
     while(1);
   }
 
-  /* Criação das Tasks com maior prioridade para forçar troca de contexto para ela na ISR */
   xReturned = xTaskCreate(vTask1,"Task1",configMINIMAL_STACK_SIZE+512,NULL,1,&task1Handle);
   if (xReturned == pdFAIL)
   {
@@ -135,9 +135,15 @@ void loop()
 /* vTask1 => inverte LED em intervalos de 200 ms */
 void vTask1(void *pvParameters)
 {
+  int i=0;
   while (1)
   {
     digitalWrite(ledDebug,!digitalRead(ledDebug));
+    i++;
+    if (i==5)
+    {
+      vTaskDelete(task1Handle);
+    }
     vTaskDelay(pdMS_TO_TICKS(200));
   }
 }
@@ -150,21 +156,22 @@ void vElevatorResponse(void *pvParameters)
   while (1)
   {
     /* Atualiza se algum botão da cabine for pressionado */
-    floorTarget=cabinButton(rx, tx, n_btc_in, &esquerdo);
+    floorTarget=cabinButton(rx, tx, n_btc_in, floorTarget, &esquerdo);
     if (floorTarget!=-1) 
     {
       xQueueSend(xFila, &floorTarget, portMAX_DELAY);
+      flagqueueinsert=1;
       floorTarget=-1;
     }
 
     /* Atualiza se algum botão do corredor for pressionado */
-    floorTarget=hallwayUpButton(rx, tx, n_seq_down, &esquerdo);
+    floorTarget=hallwayUpButton(rx, tx, n_seq_down, floorTarget, &esquerdo);
     /*if (floorTarget!=-1) 
     {
       xQueueSend(xFila, &floorTarget,portMAX_DELAY);
       floorTarget=-1;
     }*/
-    floorTarget=hallwayDownButton(rx, tx, n_seq_down, &esquerdo);
+    floorTarget=hallwayDownButton(rx, tx, n_seq_down, floorTarget, &esquerdo);
     /*if (floorTarget!=-1) 
     {
       xQueueSend(xFila, &floorTarget,portMAX_DELAY);
@@ -178,23 +185,16 @@ void vElevatorResponse(void *pvParameters)
 /* vElevatorControll => */
 void vElevatorControll(void *pvParameters)
 {
-  int floorTarget=-1;
   while (1)
   {
-    if (floorTarget==-1)
+    if (esquerdo.porta==0 && flagqueueinsert==1)
     {
       /* Aguarda receber valor na fila e passa para o controlador */
-      if (xQueueReceive(xFila,&floorTarget,pdMS_TO_TICKS(1000))==pdTRUE)
+      if (xQueueReceive(xFila,&esquerdo.prox,pdMS_TO_TICKS(50))==pdTRUE)
       {
-        //tx[0]='e';tx[1]='L';tx[2]='a';tx[3]='\r';
-        //Serial.write(tx,4);
-        controller(tx,floorTarget, timerelevador, &esquerdo);
+        controller(tx, timerelevador, &esquerdo);
+        flagqueueinsert=0; /* Reseta a flag */
       }
-    }
-    else
-    {
-      /* Atualiza andar do elevador */
-      floorTarget=floorVerify(rx, tx, n_btc_in, n_seq_up, timerelevador, &esquerdo);
     }
 
     vTaskDelay(pdMS_TO_TICKS(200));
