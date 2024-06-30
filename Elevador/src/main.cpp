@@ -9,10 +9,12 @@ Desenvolvido para a placa Wemos LOLIN32 LITE utilizando Ambiente ARDUINO / FreeR
 /* Bibliotecas FreeRTOS */
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/queue.h"
 
 /* Libs desenvolvidas*/
 #include "main.h" 
 #include "elevatorResponse.h"
+#include "elevatorController.h"
 
 /* Mapeamento de Pinos */
 #define ledDebug 22
@@ -32,20 +34,19 @@ unsigned long timerled,timerelevador;
 
 /* Protótipo de funções */
 void zerar_serial(void);
-  /*MODIFICAÇÃO DO GABRIEL, É IDEIA SO*/
-  /*A ideia aqui é a de criar uma função que é responsavel por criar uma task da maneira "segura" do professor.
-    Uma vez que essa função existe, podemos chamar ela para criar a Task e faze-la funcionar ao finalizar o vInitialize.
-    Essa ideia veio pois a todas as task estão rodando enquanto não precisam rodar e assim poderiamos criar e deletar tasks em tempo real durante a execução dos codigos*/
-//void createTaskSecure();
-/* Update: A ideia deu ruim apos uma rapida analise, mas a ideia de mover o Task creation para o final do vInitialize se mantem*/
 
 /* Variáveis para armazenamento do handle das tasks */
 TaskHandle_t task1Handle = NULL;
-TaskHandle_t ElevatorResponseHandle = NULL;
+TaskHandle_t elevatorResponseHandle = NULL;
+TaskHandle_t elevatorControllHandle = NULL;
+
+/* Variáveis para armazenamento das Filasa */
+QueueHandle_t xFila;
 
 /* Protótipos das Tasks */
 void vTask1(void *pvParameters);
 void vElevatorResponse(void *pvParameters);
+void vElevatorControll(void *pvParameters);
 
 void setup() 
 {
@@ -83,6 +84,14 @@ void setup()
   /* criação da variável de retorno da criação da task */
   BaseType_t xReturned;
 
+  /* Criação da Fila com 10 posições*/
+  xFila = xQueueCreate(10,sizeof(int)); 
+  if (xFila == NULL)
+  {
+    Serial.println("Nao foi possível criar a fila");
+    while(1);
+  }
+
   /* Criação das Tasks com maior prioridade para forçar troca de contexto para ela na ISR */
   xReturned = xTaskCreate(vTask1,"Task1",configMINIMAL_STACK_SIZE+512,NULL,1,&task1Handle);
   if (xReturned == pdFAIL)
@@ -90,12 +99,18 @@ void setup()
     Serial.println("Não foi possível criar a Task 1!");
     while(1);
   } 
-  xReturned = xTaskCreate(vElevatorResponse,"ElevatorResponseTask",configMINIMAL_STACK_SIZE,NULL,1,&ElevatorResponseHandle);
+  xReturned = xTaskCreate(vElevatorResponse,"ElevatorResponseTask",configMINIMAL_STACK_SIZE,NULL,1,&elevatorResponseHandle);
   if (xReturned == pdFAIL)
   {
     Serial.println("Não foi possível criar a ElevatorResponseTask!");
     while(1);
   }  
+  xReturned = xTaskCreate(vElevatorControll,"ElevatorControllTask",configMINIMAL_STACK_SIZE,NULL,1,&elevatorControllHandle);
+  if (xReturned == pdFAIL)
+  {
+    Serial.println("Não foi possível criar a ElevatorControllTask!");
+    while(1);
+  }
 }
 
 /* loop-Task0 => recebe comandos pela serial + Inicializa o simulador + Verifia o status da porta */
@@ -108,10 +123,12 @@ void loop()
     for (i=0;i<12;i++) rx[i]=rx[i+1];
     rx[i]=last;
   }
+  /* Atualiza andar do elevador */
+  floorVerify(rx, tx, n_btc_in, n_seq_up, timerelevador, &esquerdo);
   /* Verifica se o comando initialized foi recebido */
-  initialized(rx, tx, esquerdo);
+  initialized(rx, tx, &esquerdo);
   /* Atualiza o status da porta */
-  doorStatus(rx, tx, esquerdo);
+  doorStatus(rx, tx, &esquerdo);
   vTaskDelay(pdMS_TO_TICKS(200));
 }
 
@@ -125,18 +142,61 @@ void vTask1(void *pvParameters)
   }
 }
 
-/* vElevatorResponse => Armazena o andar atual do elevador -> Provavelmente deve ser uma ISR */
+/* vElevatorResponse => Atualiza o andar atual do elevador + Atualiza boões pressionados na cabine  +
+Atualiza botões pressionados no corredor */
 void vElevatorResponse(void *pvParameters)
 {
+  int floorTarget=-1;
   while (1)
   {
-    /* Verifica andar do elevador */
-    andarElevador(rx, tx, n_btc_in, n_seq_up, timerelevador, esquerdo);
     /* Atualiza se algum botão da cabine for pressionado */
-    botaoCabine(rx, tx, n_btc_in, esquerdo);
+    floorTarget=cabinButton(rx, tx, n_btc_in, &esquerdo);
+    if (floorTarget!=-1) 
+    {
+      xQueueSend(xFila, &floorTarget, portMAX_DELAY);
+      floorTarget=-1;
+    }
+
     /* Atualiza se algum botão do corredor for pressionado */
-    botaoCorredorSobe(rx, tx, n_seq_down, esquerdo);
-    botaoCorredorDesce(rx, tx, n_seq_down, esquerdo);
+    floorTarget=hallwayUpButton(rx, tx, n_seq_down, &esquerdo);
+    /*if (floorTarget!=-1) 
+    {
+      xQueueSend(xFila, &floorTarget,portMAX_DELAY);
+      floorTarget=-1;
+    }*/
+    floorTarget=hallwayDownButton(rx, tx, n_seq_down, &esquerdo);
+    /*if (floorTarget!=-1) 
+    {
+      xQueueSend(xFila, &floorTarget,portMAX_DELAY);
+      floorTarget=-1;
+    }*/
+
+    vTaskDelay(pdMS_TO_TICKS(200));
+  }
+}
+
+/* vElevatorControll => */
+void vElevatorControll(void *pvParameters)
+{
+  int floorTarget=-1;
+  while (1)
+  {
+    if (floorTarget==-1)
+    {
+      /* Aguarda receber valor na fila e passa para o controlador */
+      if (xQueueReceive(xFila,&floorTarget,pdMS_TO_TICKS(1000))==pdTRUE)
+      {
+        //tx[0]='e';tx[1]='L';tx[2]='a';tx[3]='\r';
+        //Serial.write(tx,4);
+        controller(tx,floorTarget, timerelevador, &esquerdo);
+      }
+    }
+    else
+    {
+      /* Atualiza andar do elevador */
+      floorTarget=floorVerify(rx, tx, n_btc_in, n_seq_up, timerelevador, &esquerdo);
+    }
+
     vTaskDelay(pdMS_TO_TICKS(200));
   }
 }
