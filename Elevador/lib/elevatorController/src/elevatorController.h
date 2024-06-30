@@ -10,7 +10,4 @@ Função de controlador do elevador
 
 #include <stdint.h>
 
-void andarElevador(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long timerelevador, struct elevador esquerdo);
-void botaoCabine(char *rx, char*tx, char n_btc_in, struct elevador esquerdo);
-void botaoCorredorSobe(char *rx, char *tx, char n_seq_up, struct elevador esquerdo);
-void botaoCorredorDesce(char *rx, char *tx, char n_seq_down, struct elevador esquerdo);
+void controller(char *tx, int floorTarget, unsigned long timerelevador, struct elevador *esquerdo);
