@@ -1,6 +1,6 @@
 /* ##########################################
 main.h
-29/06/2024
+01/07/2024
 ###########################################*/
 
 #ifndef MAIN_H
@@ -10,6 +10,7 @@ struct elevador
 {
   char andar;                   //Andar atual
   char estado;                  //Sudindo 'S', descendo 'D' e parado 'P'.
+  char sentido;                 //Sentido do movimento => Subindo 'S' ou decendo 'D'
   char prox;                    //PrÃ³ximo andar ...
   char btc_up[15];              //BotÃµes do corredor up
   char btc_down[15];            //BotÃµes do corredor down
