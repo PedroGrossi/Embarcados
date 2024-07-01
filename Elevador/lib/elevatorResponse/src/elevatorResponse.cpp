@@ -1,6 +1,6 @@
 /*#######################################################################
 Aluno = Pedro Henrique Grossi da Silva
-Data = 29/06/2024
+Data = 01/07/2024
 Desenvolvido para a placa Wemos LOLIN32 LITE utilizando Ambiente ARDUINO
 #######################################################################*/
 /* Biblioteca do Arduino */
@@ -13,9 +13,9 @@ Desenvolvido para a placa Wemos LOLIN32 LITE utilizando Ambiente ARDUINO
 void initialized(char *rx, char *tx, struct elevador *esquerdo);
 void doorStatus(char *rx, char *tx, struct elevador *esquerdo);
 void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long timerelevador, struct elevador *esquerdo);
-int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevador *esquerdo);
-int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct elevador *esquerdo);
-int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, struct elevador *esquerdo);
+void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo);
+void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerdo);
+void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esquerdo);
 
 void initialized(char *rx, char *tx, struct elevador *esquerdo)
 {
@@ -25,7 +25,7 @@ void initialized(char *rx, char *tx, struct elevador *esquerdo)
         //contador genérico:
         int i;
         //Envia msg resete elevador esquerdo - delay para esperar o SIMSE2 abrir:
-        delay(1000);//delay para SIMSE2 abrir: varia de PC para PC (1000-4000). SUPER Loop: Sem delay no programa principal ... aqui nao afeta o funcionamento apos init ...
+        delay(2000);//delay para SIMSE2 abrir: varia de PC para PC (1000-4000). SUPER Loop: Sem delay no programa principal ... aqui nao afeta o funcionamento apos init ...
         tx[0]='e';tx[1]='r';tx[2]='\r';
         Serial.write(tx,3);
         esquerdo->andar=0;
@@ -404,7 +404,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
     }
 };
 
-int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevador *esquerdo)
+void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo)
 {
     //SIMSE2 -> Enviando msg BotÃ£o Interno da Cabine terreo 0:
     if (rx[8]=='e'&&rx[9]=='I'&&rx[10]=='a'&&rx[11]=='\r'&&rx[12]=='\n')
@@ -414,8 +414,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[0]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='a';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=0;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -428,8 +426,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[1]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='b';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=1;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -442,8 +438,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[2]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='c';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=2;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -456,8 +450,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[3]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='d';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=3;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -470,8 +462,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[4]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='e';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=4;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -484,8 +474,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[5]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='f';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=5;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -498,8 +486,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[6]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='g';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=6;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -512,8 +498,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[7]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='h';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=7;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -526,8 +510,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[8]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='i';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=8;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -540,8 +522,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[9]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='j';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=9;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -554,8 +534,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[10]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='k';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=10;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -568,8 +546,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[11]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='l';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=11;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -582,8 +558,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[12]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='m';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=12;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -596,8 +570,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[13]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='n';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=13;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -610,8 +582,6 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[14]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='o';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=14;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -624,17 +594,13 @@ int cabinButton(char *rx, char*tx, char n_btc_in, int floorTarget, struct elevad
             esquerdo->btc_in[15]=1;
             //Envia msg ascender luz do botÃ£o:
             tx[0]='e';tx[1]='L';tx[2]='p';tx[3]='\r'; Serial.write(tx,4);
-            //Coloca o andar na fila
-            floorTarget=15;
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
     }
-
-    return floorTarget;
 }
 
-int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct elevador *esquerdo)
+void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerdo)
 {
     //SIMSE2 -> Enviando msg BotÃ£o corredor terreo sobe:
     if (rx[6]=='e'&&rx[7]=='E'&&rx[8]=='0'&&rx[9]=='0'&&rx[10]=='s'&&rx[11]=='\r'&&rx[12]=='\n')
@@ -643,9 +609,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='a';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=0;
 
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -658,9 +621,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='b';tx[3]='\r';Serial.write(tx,4);
         
-        //Colocar o andar na fila
-        floorTarget=1;
-        
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -671,9 +631,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='c';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=2;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -685,9 +642,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='d';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=3;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -699,9 +653,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='e';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=4;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -713,9 +664,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='f';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=5;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -727,9 +675,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='g';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=6;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -741,9 +686,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='h';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=7;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -755,9 +697,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='i';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=8;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -769,9 +708,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='j';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=9;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -783,9 +719,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='k';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=10;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -797,9 +730,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='l';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=11;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -811,9 +741,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='m';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=12;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -825,9 +752,6 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='n';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=13;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -839,18 +763,14 @@ int hallwayUpButton(char *rx, char *tx, char n_seq_up, int floorTarget, struct e
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='c';tx[1]='L';tx[2]='o';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=14;
         
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
     //SIMSE2 -> Enviando msg BotÃ£o corredor 15 andar sobe: nÃ£o existe
-    return floorTarget;
 }
 
-int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, struct elevador *esquerdo)
+void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esquerdo)
 {
     //SIMSE2 -> Enviando msg BotÃ£o corredor terreo desce: nÃ£o existe
     //SIMSE2 -> Enviando msg BotÃ£o corredor 1 andar desce:
@@ -860,9 +780,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='b';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=1;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -874,9 +791,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='c';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=2;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -888,9 +802,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='d';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=3;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -902,9 +813,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='e';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=4;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -916,9 +824,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='f';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=5;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -930,9 +835,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='g';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=6;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -944,9 +846,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='h';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=7;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -958,9 +857,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='i';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=8;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -972,9 +868,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='j';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=9;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -986,9 +879,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='k';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=10;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -1000,9 +890,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='l';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=11;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -1014,9 +901,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='m';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=12;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -1028,9 +912,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='n';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=13;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -1042,9 +923,6 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='o';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=14;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
@@ -1056,12 +934,8 @@ int hallwayDownButton(char *rx, char *tx, char n_seq_down, int floorTarget, stru
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
         tx[0]='d';tx[1]='L';tx[2]='p';tx[3]='\r';Serial.write(tx,4);
-
-        //Colocar o andar na fila
-        floorTarget=15;
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
-    return floorTarget;
 }
