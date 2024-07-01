@@ -36,7 +36,7 @@ unsigned long timerled,timerelevador;
 void zerar_serial(void);
 
 /* Variáveis para armazenamento do handle das tasks */
-//TaskHandle_t task1Handle = NULL;
+TaskHandle_t task1Handle = NULL;
 TaskHandle_t elevatorFloorHandle = NULL;
 TaskHandle_t elevatorResponseHandle = NULL;
 TaskHandle_t elevatorControllHandle = NULL;
@@ -45,7 +45,7 @@ TaskHandle_t elevatorControllHandle = NULL;
 QueueHandle_t xFila;
 
 /* Protótipos das Tasks */
-//void vTask1(void *pvParameters);
+void vTask1(void *pvParameters);
 void vElevatorFloor(void *pvParameters);
 void vElevatorResponse(void *pvParameters);
 void vElevatorControll(void *pvParameters);
@@ -93,13 +93,12 @@ void setup()
     Serial.println("Nao foi possível criar a fila");
     while(1);
   }
-  /*
   xReturned = xTaskCreate(vTask1,"Task1",configMINIMAL_STACK_SIZE,NULL,1,&task1Handle);
   if (xReturned == pdFAIL)
   {
     Serial.println("Não foi possível criar a Task 1!");
     while(1);
-  }*/
+  }
   xReturned = xTaskCreate(vElevatorFloor,"ElevatorFloorTask",configMINIMAL_STACK_SIZE,NULL,2,&elevatorFloorHandle);
   if (xReturned == pdFAIL)
   {
@@ -131,8 +130,7 @@ void loop()
   vTaskDelay(pdMS_TO_TICKS(400));
 }
 
-/* vTask1 => inverte LED em intervalos de 200 ms */
-/*
+/* vTask1 => inverte LED em intervalos de 200 ms  (Utilizando para verificar visualmente se o SO está funcionando)*/
 void vTask1(void *pvParameters)
 {
   int i=0;
@@ -147,7 +145,7 @@ void vTask1(void *pvParameters)
     vTaskDelay(pdMS_TO_TICKS(200));
   }
 }
-*/
+
 /* vElevatorFloor => recebe comandos pela serial + verifica o andar do elevador */
 void vElevatorFloor(void *pvParameters)
 {
