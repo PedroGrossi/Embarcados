@@ -1,6 +1,6 @@
 /*##################################################################################
 Alunos = Gabriel Passos e Pedro Henrique Grossi da Silva
-Data = 20/06/2024
+Data = 01/07/2024
 Desenvolvido para a placa Wemos LOLIN32 LITE utilizando Ambiente ARDUINO / FreeRTOS
 ##################################################################################*/
 /* Biblioteca do Arduino */
@@ -26,7 +26,7 @@ char rx[13],tx[4],last;
 /* contador genérico: */
 int i;
 /* flags de eventos: */
-char flagcabine,flagcorredorup,flagcorredordown, flagqueueinsert;
+char flagcabine,flagcorredorup,flagcorredordown;
 /* contadores de eventos: */
 char n_btc_in,n_seq_up,n_seq_down;
 /* temporizadores de sftw: */
@@ -36,7 +36,8 @@ unsigned long timerled,timerelevador;
 void zerar_serial(void);
 
 /* Variáveis para armazenamento do handle das tasks */
-TaskHandle_t task1Handle = NULL;
+//TaskHandle_t task1Handle = NULL;
+TaskHandle_t elevatorFloorHandle = NULL;
 TaskHandle_t elevatorResponseHandle = NULL;
 TaskHandle_t elevatorControllHandle = NULL;
 
@@ -44,7 +45,8 @@ TaskHandle_t elevatorControllHandle = NULL;
 QueueHandle_t xFila;
 
 /* Protótipos das Tasks */
-void vTask1(void *pvParameters);
+//void vTask1(void *pvParameters);
+void vElevatorFloor(void *pvParameters);
 void vElevatorResponse(void *pvParameters);
 void vElevatorControll(void *pvParameters);
 
@@ -57,7 +59,6 @@ void setup()
   flagcabine=0;
   flagcorredorup=0;
   flagcorredordown=0;
-  flagqueueinsert=0;
   n_btc_in=0;
   n_seq_up=0;
   n_seq_down=0;
@@ -92,11 +93,17 @@ void setup()
     Serial.println("Nao foi possível criar a fila");
     while(1);
   }
-
-  xReturned = xTaskCreate(vTask1,"Task1",configMINIMAL_STACK_SIZE+512,NULL,1,&task1Handle);
+  /*
+  xReturned = xTaskCreate(vTask1,"Task1",configMINIMAL_STACK_SIZE,NULL,1,&task1Handle);
   if (xReturned == pdFAIL)
   {
     Serial.println("Não foi possível criar a Task 1!");
+    while(1);
+  }*/
+  xReturned = xTaskCreate(vElevatorFloor,"ElevatorFloorTask",configMINIMAL_STACK_SIZE,NULL,2,&elevatorFloorHandle);
+  if (xReturned == pdFAIL)
+  {
+    Serial.println("Não foi possível criar a ElevatorFloorTask!");
     while(1);
   } 
   xReturned = xTaskCreate(vElevatorResponse,"ElevatorResponseTask",configMINIMAL_STACK_SIZE,NULL,1,&elevatorResponseHandle);
@@ -113,26 +120,19 @@ void setup()
   }
 }
 
-/* loop-Task0 => recebe comandos pela serial + Inicializa o simulador + Verifia o status da porta */
+/* loop-Task0 => Inicializa o simulador + Verifia o status da porta */
 void loop()
 {
-  /* Verifica se existe algum byte na porta serial, caso exista rotaciona buffer e inclui o ultimo byte recebido. */
-  if (Serial.available()>=1)
-  {
-    last=Serial.read();
-    for (i=0;i<12;i++) rx[i]=rx[i+1];
-    rx[i]=last;
-  }
-  /* Atualiza andar do elevador */
-  floorVerify(rx, tx, n_btc_in, n_seq_up, timerelevador, &esquerdo);
   /* Verifica se o comando initialized foi recebido */
   initialized(rx, tx, &esquerdo);
   /* Atualiza o status da porta */
   doorStatus(rx, tx, &esquerdo);
-  vTaskDelay(pdMS_TO_TICKS(200));
+
+  vTaskDelay(pdMS_TO_TICKS(400));
 }
 
 /* vTask1 => inverte LED em intervalos de 200 ms */
+/*
 void vTask1(void *pvParameters)
 {
   int i=0;
@@ -147,38 +147,66 @@ void vTask1(void *pvParameters)
     vTaskDelay(pdMS_TO_TICKS(200));
   }
 }
+*/
+/* vElevatorFloor => recebe comandos pela serial + verifica o andar do elevador */
+void vElevatorFloor(void *pvParameters)
+{
+  while (1)
+  {
+    /* Verifica se existe algum byte na porta serial, caso exista rotaciona buffer e inclui o ultimo byte recebido. */
+    if (Serial.available()>=1)
+    {
+      last=Serial.read();
+      for (i=0;i<12;i++) rx[i]=rx[i+1];
+      rx[i]=last;
+    }
+    /* Atualiza andar do elevador */
+    floorVerify(rx, tx, n_btc_in, n_seq_up, timerelevador, &esquerdo);
+
+    vTaskDelay(pdMS_TO_TICKS(50));
+  }
+}
 
 /* vElevatorResponse => Atualiza o andar atual do elevador + Atualiza boões pressionados na cabine  +
 Atualiza botões pressionados no corredor */
 void vElevatorResponse(void *pvParameters)
 {
-  int floorTarget=-1;
   while (1)
   {
     /* Atualiza se algum botão da cabine for pressionado */
-    floorTarget=cabinButton(rx, tx, n_btc_in, floorTarget, &esquerdo);
-    if (floorTarget!=-1) 
-    {
-      xQueueSend(xFila, &floorTarget, portMAX_DELAY);
-      flagqueueinsert=1;
-      floorTarget=-1;
-    }
+    cabinButton(rx, tx, n_btc_in, &esquerdo);
 
     /* Atualiza se algum botão do corredor for pressionado */
-    floorTarget=hallwayUpButton(rx, tx, n_seq_down, floorTarget, &esquerdo);
-    /*if (floorTarget!=-1) 
-    {
-      xQueueSend(xFila, &floorTarget,portMAX_DELAY);
-      floorTarget=-1;
-    }*/
-    floorTarget=hallwayDownButton(rx, tx, n_seq_down, floorTarget, &esquerdo);
-    /*if (floorTarget!=-1) 
-    {
-      xQueueSend(xFila, &floorTarget,portMAX_DELAY);
-      floorTarget=-1;
-    }*/
+    hallwayUpButton(rx, tx, n_seq_down, &esquerdo);
+    hallwayDownButton(rx, tx, n_seq_down, &esquerdo);
 
-    vTaskDelay(pdMS_TO_TICKS(200));
+    /* Adiciona andares na fila */
+    for(i=0;i<16;i++)
+    {
+      if(esquerdo.btc_in[i])
+      {
+        xQueueSend(xFila, &i,portMAX_DELAY);
+        esquerdo.btc_in[i]=0;
+      }
+    }
+    for(i=0;i<15;i++)
+    {
+      if(esquerdo.btc_up[i])
+      {
+        xQueueSend(xFila, &i,portMAX_DELAY);
+        esquerdo.btc_up[i]=0;
+      }
+    }
+    for(i=1;i<16;i++)
+    {
+      if(esquerdo.btc_down[i])
+      {
+        xQueueSend(xFila, &i,portMAX_DELAY);
+        esquerdo.btc_down[i]=0;
+      }
+    }
+
+    vTaskDelay(pdMS_TO_TICKS(400));
   }
 }
 
@@ -187,17 +215,17 @@ void vElevatorControll(void *pvParameters)
 {
   while (1)
   {
-    if (esquerdo.porta==0 && flagqueueinsert==1)
+    /* Se a porta estiver aberta (parado) e o proximo foi igual ao andar atual => buscar proximo na fila*/
+    if (esquerdo.porta==0 && esquerdo.prox==esquerdo.andar)
     {
       /* Aguarda receber valor na fila e passa para o controlador */
       if (xQueueReceive(xFila,&esquerdo.prox,pdMS_TO_TICKS(50))==pdTRUE)
       {
         controller(tx, timerelevador, &esquerdo);
-        flagqueueinsert=0; /* Reseta a flag */
       }
     }
 
-    vTaskDelay(pdMS_TO_TICKS(200));
+    vTaskDelay(pdMS_TO_TICKS(400));
   }
 }
 
