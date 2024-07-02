@@ -9,14 +9,6 @@ Desenvolvido para a placa Wemos LOLIN32 LITE utilizando Ambiente ARDUINO
 /* Libs desenvolvidas*/
 #include "..\..\..\src\main.h"
 
-/* Protótipo das funções*/
-void initialized(char *rx, char *tx, struct elevador *esquerdo);
-void doorStatus(char *rx, char *tx, struct elevador *esquerdo);
-void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long *timerelevador, struct elevador *esquerdo);
-void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo);
-void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerdo);
-void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esquerdo);
-
 void initialized(char *rx, char *tx, struct elevador *esquerdo)
 {
     //SIMSE2 -> Enviando msg de inicialização:
