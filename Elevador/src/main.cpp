@@ -148,10 +148,8 @@ void vTask1(void *pvParameters)
   {
     digitalWrite(ledDebug,!digitalRead(ledDebug));
     i++;
-    if (i==5)
-    {
-      vTaskDelete(task1Handle);
-    }
+    if (i==5) vTaskDelete(task1Handle);
+
     vTaskDelay(pdMS_TO_TICKS(200));
   }
 }
@@ -210,8 +208,13 @@ void vElevatorResponse(void *pvParameters)
             i=esquerdo.prox;
             esquerdo.prox=aux;
             xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+            /* Retornando o i para o valor original*/
+            i=aux;
           }
-          else xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+          else
+          {
+            xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+          }
         }
         /* Se o elevador estiver decendo e o andar solicitado for acima ou o andar passante => fila de subida */
         if(esquerdo.estado=='D' && i>esquerdo.andar) xQueueSend(xFilaSubida, &i,portMAX_DELAY);
@@ -226,10 +229,14 @@ void vElevatorResponse(void *pvParameters)
             i=esquerdo.prox;
             esquerdo.prox=aux;
             xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+            /* Retornando o i para o valor original*/
+            i=aux;
           }
-          else xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+          else
+          {
+            xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+          }
         }
-        
         esquerdo.btc_in[i]=0;
       }
     }
@@ -237,15 +244,61 @@ void vElevatorResponse(void *pvParameters)
     {
       if(esquerdo.btc_up[i])
       {
-        xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+        /* Se o andar solicitado for acima => fila de subida */
+        if(i>esquerdo.andar)
+        {
+          /* Se o andar solicitado for antes do andar alvo */
+          if(i<esquerdo.prox)
+          {
+            /* Troca o andar alvo */
+            char aux=i;
+            i=esquerdo.prox;
+            esquerdo.prox=aux;
+            xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+            /* Retornando o i para o valor original*/
+            i=aux;
+          }
+          else
+          {
+            xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+          }
+        }
+        else
+        {
+          xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+        }
         esquerdo.btc_up[i]=0;
       }
     }
-    for(i=1;i<16;i++)
+    for(i=0;i<15;i++)
     {
       if(esquerdo.btc_down[i])
       {
-        xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+        i++;
+        /* Se o andar solicitado for abaixo => fila de decida */
+        if(i<esquerdo.andar)
+        {
+          /* Se o andar solicitado for antes do andar alvo */
+          if(i>esquerdo.prox)
+          {
+            /* Troca o andar alvo */
+            char aux=i;
+            i=esquerdo.prox;
+            esquerdo.prox=aux;
+            xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+            /* Retornando o i para o valor original*/
+            i=aux;
+          }
+          else
+          {
+            xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+          }
+        }
+        else
+        {
+          xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+        }
+        i--;
         esquerdo.btc_down[i]=0;
       }
     }
@@ -279,17 +332,19 @@ void vElevatorControll(void *pvParameters)
             /* Devolve o elemento para a fila */
             xQueueSend(xFilaSubida, &esquerdo.prox,portMAX_DELAY);
             /* Muda o sentido do elevador */
-            esquerdo.sentido=='D';
+            esquerdo.sentido='D';
           }
         }
         /* Muda o sentido do elevador */
-        else esquerdo.sentido=='D';
+        else 
+        {
+          esquerdo.sentido='D';
+        }
       }
 
       /* Se o elevador estiver com sentido de decida */
       if(esquerdo.sentido=='D')
       {
-        digitalWrite(ledDebug,!digitalRead(ledDebug));
         /* possui elementos na fila de decida */
         if(xQueueReceive(xFilaDecida,&esquerdo.prox,pdMS_TO_TICKS(50))==pdTRUE)
         {
@@ -304,12 +359,14 @@ void vElevatorControll(void *pvParameters)
             /* Devolve o elemento para a fila */
             xQueueSend(xFilaDecida, &esquerdo.prox,portMAX_DELAY);
             /* Muda o sentido do elevador */
-            esquerdo.sentido=='S';
+            esquerdo.sentido='S';
           }
         }
         /* Muda o sentido do elevador */
-        else esquerdo.sentido=='S';
-
+        else 
+        {
+          esquerdo.sentido='S';
+        }
       }
     }
 
