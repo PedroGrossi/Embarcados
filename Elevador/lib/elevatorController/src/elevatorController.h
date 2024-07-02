@@ -10,4 +10,4 @@ Função de controlador do elevador
 
 #include <stdint.h>
 
-void controller(char *tx, unsigned long timerelevador, struct elevador *esquerdo);
+void controller(char *tx, struct elevador *esquerdo);

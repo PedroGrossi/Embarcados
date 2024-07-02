@@ -9,14 +9,6 @@ Desenvolvido para a placa Wemos LOLIN32 LITE utilizando Ambiente ARDUINO
 /* Libs desenvolvidas*/
 #include "..\..\..\src\main.h"
 
-/* Protótipo das funções*/
-void initialized(char *rx, char *tx, struct elevador *esquerdo);
-void doorStatus(char *rx, char *tx, struct elevador *esquerdo);
-void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long timerelevador, struct elevador *esquerdo);
-void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo);
-void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerdo);
-void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esquerdo);
-
 void initialized(char *rx, char *tx, struct elevador *esquerdo)
 {
     //SIMSE2 -> Enviando msg de inicialização:
@@ -69,7 +61,7 @@ void doorStatus(char *rx, char *tx, struct elevador *esquerdo)
     }
 }
 
-void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long timerelevador, struct elevador *esquerdo)
+void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long *timerelevador, struct elevador *esquerdo)
 {
     //SIMSE2 -> Enviando msg elevador no terreo:
     if (rx[9]=='e'&&rx[10]=='0'&&rx[11]=='\r'&&rx[12]=='\n')
@@ -79,7 +71,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
         {
             esquerdo->btc_in[0]=0;
             esquerdo->btc_up[0]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='a';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -100,7 +92,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[1]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[1]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[0]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='b';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -121,7 +113,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[2]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[2]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[1]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='c';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -142,7 +134,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[3]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[3]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[2]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='d';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -163,7 +155,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[4]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[4]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[3]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             tx[0]='e';tx[1]='D';tx[2]='e';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -184,7 +176,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[5]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[5]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[4]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='f';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -205,7 +197,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[6]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[6]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[5]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='g';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -226,7 +218,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[7]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[7]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[6]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='h';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -247,7 +239,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[8]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[8]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[7]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='i';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -268,7 +260,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[9]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[9]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[8]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='j';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -289,7 +281,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[10]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[10]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[9]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='k';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -310,7 +302,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[11]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[11]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[10]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='l';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -331,7 +323,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[12]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[12]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[11]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='m';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -372,7 +364,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[14]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[14]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[13]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='o';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
@@ -392,7 +384,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
         {
             esquerdo->btc_in[15]=0;
             esquerdo->btc_down[14]=0;
-            timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
+            *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
             esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='p';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
