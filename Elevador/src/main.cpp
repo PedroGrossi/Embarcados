@@ -169,7 +169,7 @@ void vElevatorFloor(void *pvParameters)
       rx[i]=last;
     }
     /* Atualiza andar do elevador */
-    floorVerify(rx, tx, n_btc_in, n_seq_up, timerelevador, &esquerdo);
+    floorVerify(rx, tx, n_btc_in, n_seq_up, &timerelevador, &esquerdo);
 
     vTaskDelay(pdMS_TO_TICKS(50));
   }
@@ -198,7 +198,7 @@ void vElevatorResponse(void *pvParameters)
         /* Se o elevador estiver parado e o andar solicitado for acima => fila de subida */
         if(esquerdo.estado=='P' && i>esquerdo.andar) xQueueSend(xFilaSubida, &i,portMAX_DELAY);
         /* Se o elevador estiver subindo e o andar solicitado for abaixo ou o andar passante => fila de decida */
-        if(esquerdo.estado=='S' && i<=esquerdo.andar) xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+        if(esquerdo.estado=='S' && i<esquerdo.andar) xQueueSend(xFilaDecida, &i,portMAX_DELAY);
         /* Se o elevador estiver subindo e o andar solicitado for acima => fila de subida */
         if(esquerdo.estado=='S' && i>esquerdo.andar)
         {
@@ -211,9 +211,10 @@ void vElevatorResponse(void *pvParameters)
             esquerdo.prox=aux;
             xQueueSend(xFilaSubida, &i,portMAX_DELAY);
           }
+          else xQueueSend(xFilaSubida, &i,portMAX_DELAY);
         }
         /* Se o elevador estiver decendo e o andar solicitado for acima ou o andar passante => fila de subida */
-        if(esquerdo.estado=='D' && i>=esquerdo.andar) xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+        if(esquerdo.estado=='D' && i>esquerdo.andar) xQueueSend(xFilaSubida, &i,portMAX_DELAY);
         /* Se o elevador estiver decendo e o andar solicitado for abaixo => fila de decida */
         if(esquerdo.estado=='D' && i<esquerdo.andar)
         {
@@ -226,6 +227,7 @@ void vElevatorResponse(void *pvParameters)
             esquerdo.prox=aux;
             xQueueSend(xFilaDecida, &i,portMAX_DELAY);
           }
+          else xQueueSend(xFilaDecida, &i,portMAX_DELAY);
         }
         
         esquerdo.btc_in[i]=0;
@@ -252,7 +254,7 @@ void vElevatorResponse(void *pvParameters)
   }
 }
 
-/* vElevatorControll => */
+/* vElevatorControll */
 void vElevatorControll(void *pvParameters)
 {
   while (1)
@@ -269,7 +271,8 @@ void vElevatorControll(void *pvParameters)
           /* o elemento recebido é acima do andar atual*/
           if(esquerdo.prox>esquerdo.andar)
           {
-            controller(tx, timerelevador, &esquerdo);
+            while(millis()<timerelevador) vTaskDelay(pdMS_TO_TICKS(100));
+            controller(tx, &esquerdo);
           } 
           else
           {
@@ -286,13 +289,15 @@ void vElevatorControll(void *pvParameters)
       /* Se o elevador estiver com sentido de decida */
       if(esquerdo.sentido=='D')
       {
+        digitalWrite(ledDebug,!digitalRead(ledDebug));
         /* possui elementos na fila de decida */
         if(xQueueReceive(xFilaDecida,&esquerdo.prox,pdMS_TO_TICKS(50))==pdTRUE)
         {
           /* O elemento recebido for abaixo do andar atual*/
           if(esquerdo.prox<esquerdo.andar)
           {
-            controller(tx, timerelevador, &esquerdo);
+            while(millis()<timerelevador) vTaskDelay(pdMS_TO_TICKS(100));
+            controller(tx, &esquerdo);
           } 
           else
           {
