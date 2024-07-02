@@ -9,7 +9,7 @@ Desenvolvido para a placa Wemos LOLIN32 LITE utilizando Ambiente ARDUINO
 /* Libs desenvolvidas*/
 #include "..\..\..\src\main.h"
 
-void initialized(char *rx, char *tx, struct elevador *esquerdo)
+void initialized(char *rx, char *tx, struct elevador *esquerdo, SemaphoreHandle_t xSerialMutex)
 {
     //SIMSE2 -> Enviando msg de inicialização:
     if (rx[0]=='i'&&rx[1]=='n'&&rx[2]=='i'&&rx[3]=='t'&&rx[4]=='i'&&rx[5]=='a'&&rx[6]=='l'&&rx[7]=='i'&&rx[8]=='z'&&rx[9]=='e'&&rx[10]=='d'&&rx[11]=='\r'&&rx[12]=='\n')
@@ -19,7 +19,11 @@ void initialized(char *rx, char *tx, struct elevador *esquerdo)
         //Envia msg resete elevador esquerdo - delay para esperar o SIMSE2 abrir:
         delay(2000);//delay para SIMSE2 abrir: varia de PC para PC (1000-4000). SUPER Loop: Sem delay no programa principal ... aqui nao afeta o funcionamento apos init ...
         tx[0]='e';tx[1]='r';tx[2]='\r';
-        Serial.write(tx,3);
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,3);
+            xSemaphoreGive(xSerialMutex);
+        }
         esquerdo->andar=0;
         esquerdo->estado='P';
         esquerdo->prox=0;
@@ -35,7 +39,7 @@ void initialized(char *rx, char *tx, struct elevador *esquerdo)
     }
 }
 
-void doorStatus(char *rx, char *tx, struct elevador *esquerdo)
+void doorStatus(char *rx, char *tx, struct elevador *esquerdo, SemaphoreHandle_t xSerialMutex)
 {
     //SIMSE2 -> Enviando msg porta aberta:
     if (rx[9]=='e'&&rx[10]=='A'&&rx[11]=='\r'&&rx[12]=='\n')
@@ -49,19 +53,27 @@ void doorStatus(char *rx, char *tx, struct elevador *esquerdo)
         if (esquerdo->estado=='S')
         {
         tx[0]='e';tx[1]='s';tx[2]='\r';
-        Serial.write(tx,3);
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,3);
+            xSemaphoreGive(xSerialMutex);
+        }
         }
         if (esquerdo->estado=='D')
         {
         tx[0]='e';tx[1]='d';tx[2]='\r';
-        Serial.write(tx,3);
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,3);
+            xSemaphoreGive(xSerialMutex);
+        }
         }
         esquerdo->porta=1;
         zerar_serial();
     }
 }
 
-void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long *timerelevador, struct elevador *esquerdo)
+void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long *timerelevador, struct elevador *esquerdo, SemaphoreHandle_t xSerialMutex)
 {
     //SIMSE2 -> Enviando msg elevador no terreo:
     if (rx[9]=='e'&&rx[10]=='0'&&rx[11]=='\r'&&rx[12]=='\n')
@@ -72,12 +84,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[0]=0;
             esquerdo->btc_up[0]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='a';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='a';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='a';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='a';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -93,12 +125,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[1]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[0]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='b';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='b';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='b';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='b';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                       //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -114,12 +166,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[2]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[1]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='c';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='c';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='c';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='c';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -135,12 +207,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[3]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[2]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='d';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='d';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='d';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='d';tx[3]='\r';                             //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                         //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -157,11 +249,31 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='D') esquerdo->btc_down[3]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
-            tx[0]='e';tx[1]='D';tx[2]='e';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='D';tx[2]='e';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='e';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='e';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -177,12 +289,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[5]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[4]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='f';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='f';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='f';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='f';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -198,12 +330,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[6]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[5]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                       //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='g';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='g';tx[3]='\r';                             //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='g';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='g';tx[3]='\r';                             //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -219,12 +371,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[7]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[6]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                       //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='h';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='h';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='h';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='h';tx[3]='\r';                             //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -240,12 +412,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[8]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[7]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='i';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='i';tx[3]='\r';                               //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='i';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='i';tx[3]='\r';                             //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -261,12 +453,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[9]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[8]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='j';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='j';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='j';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='j';tx[3]='\r';                             //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                       //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -282,12 +494,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[10]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[9]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='k';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='k';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='k';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='k';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -303,12 +535,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[11]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[10]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                         //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='l';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='l';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='l';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='l';tx[3]='\r';                             //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -324,12 +576,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[12]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[11]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='m';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='m';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='m';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='m';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -344,12 +616,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[13]=0;
             if (esquerdo->estado=='S') esquerdo->btc_up[13]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[12]=0;
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                         //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='n';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='n';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='n';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='n';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -365,12 +657,32 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[14]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[13]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='o';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
+            tx[0]='e';tx[1]='D';tx[2]='o';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-            tx[0]='c';tx[1]='D';tx[2]='o';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='c';tx[1]='D';tx[2]='o';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                       //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -385,10 +697,25 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             esquerdo->btc_in[15]=0;
             esquerdo->btc_down[14]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            tx[0]='e';tx[1]='p';tx[2]='\r';Serial.write(tx,3);                    //para elevador
+            tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             esquerdo->estado='P';                                                  //estado=parado
-            tx[0]='e';tx[1]='D';tx[2]='p';tx[3]='\r';Serial.write(tx,4);          //apagar botÃ£o cabine
-            tx[0]='e';tx[1]='a';tx[2]='\r';Serial.write(tx,3);                    //abrir porta
+            tx[0]='e';tx[1]='D';tx[2]='p';tx[3]='\r';                              //apagar botÃ£o cabine
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
+            tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,3);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;n_seq_up=0;                                                //reset contadores de eventos ...
             //Avisa que o elevaor chegou ao andar
         }
@@ -396,7 +723,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
     }
 };
 
-void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo)
+void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, SemaphoreHandle_t xSerialMutex)
 {
     //SIMSE2 -> Enviando msg BotÃ£o Interno da Cabine terreo 0:
     if (rx[8]=='e'&&rx[9]=='I'&&rx[10]=='a'&&rx[11]=='\r'&&rx[12]=='\n')
@@ -592,7 +919,7 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo)
     }
 }
 
-void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerdo)
+void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerdo, SemaphoreHandle_t xSerialMutex)
 {
     //SIMSE2 -> Enviando msg BotÃ£o corredor terreo sobe:
     if (rx[6]=='e'&&rx[7]=='E'&&rx[8]=='0'&&rx[9]=='0'&&rx[10]=='s'&&rx[11]=='\r'&&rx[12]=='\n')
@@ -762,7 +1089,7 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
     //SIMSE2 -> Enviando msg BotÃ£o corredor 15 andar sobe: nÃ£o existe
 }
 
-void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esquerdo)
+void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esquerdo, SemaphoreHandle_t xSerialMutex)
 {
     //SIMSE2 -> Enviando msg BotÃ£o corredor terreo desce: nÃ£o existe
     //SIMSE2 -> Enviando msg BotÃ£o corredor 1 andar desce:
