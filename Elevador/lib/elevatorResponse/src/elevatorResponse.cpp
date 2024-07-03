@@ -248,13 +248,13 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             if (esquerdo->estado=='S') esquerdo->btc_up[4]=0;
             if (esquerdo->estado=='D') esquerdo->btc_down[3]=0;
             *timerelevador=millis()+5000;                                          //parar elevador por 5s ... superloop waitflag ... timerelevador=5000...               
-            esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='p';tx[2]='\r';                                        //para elevador
             if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
             {
                 Serial.write(tx,3);
                 xSemaphoreGive(xSerialMutex);
             }
+            esquerdo->estado='P';                                                  //estado=parado
             tx[0]='e';tx[1]='D';tx[2]='e';tx[3]='\r';                              //apagar botÃ£o cabine
             if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
             {
@@ -306,7 +306,7 @@ void floorVerify(char *rx, char *tx, char n_btc_in, char n_seq_up, unsigned long
             tx[0]='c';tx[1]='D';tx[2]='f';tx[3]='\r';                              //apagar botÃ£o cabine
             if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
             {
-                Serial.write(tx,3);
+                Serial.write(tx,4);
                 xSemaphoreGive(xSerialMutex);
             }
             tx[0]='e';tx[1]='a';tx[2]='\r';                                        //abrir porta
@@ -732,7 +732,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[0]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='a';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='a';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -744,7 +749,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[1]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='b';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='b';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -756,7 +766,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[2]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='c';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='c';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -768,7 +783,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[3]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='d';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='d';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -780,7 +800,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[4]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='e';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='e';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -792,7 +817,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[5]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='f';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='f';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -804,7 +834,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[6]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='g';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='g';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -816,7 +851,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[7]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='h';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='h';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -828,7 +868,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[8]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='i';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='i';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -840,7 +885,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[9]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='j';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='j';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -852,7 +902,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[10]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='k';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='k';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -864,7 +919,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[11]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='l';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='l';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -876,7 +936,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[12]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='m';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='m';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -888,7 +953,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[13]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='n';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='n';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -900,7 +970,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[14]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='o';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='o';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -912,7 +987,12 @@ void cabinButton(char *rx, char*tx, char n_btc_in, struct elevador *esquerdo, Se
         {
             esquerdo->btc_in[15]=1;
             //Envia msg ascender luz do botÃ£o:
-            tx[0]='e';tx[1]='L';tx[2]='p';tx[3]='\r'; Serial.write(tx,4);
+            tx[0]='e';tx[1]='L';tx[2]='p';tx[3]='\r';
+            if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+            {
+                Serial.write(tx,4);
+                xSemaphoreGive(xSerialMutex);
+            }
             n_btc_in=0;                                                            //reset contadores de eventos ...
         }
         zerar_serial();
@@ -927,7 +1007,12 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=0) esquerdo->btc_up[0]=1;                              //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='a';tx[3]='\r';Serial.write(tx,4);
+        tx[0]='c';tx[1]='L';tx[2]='a';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
 
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
@@ -938,8 +1023,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=1) esquerdo->btc_up[1]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='b';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='b';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -949,8 +1039,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=2) esquerdo->btc_up[2]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='c';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='c';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -960,8 +1055,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=3) esquerdo->btc_up[3]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='d';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='d';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -971,8 +1071,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=4) esquerdo->btc_up[4]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='e';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='e';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -982,8 +1087,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=5) esquerdo->btc_up[5]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='f';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='f';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -993,8 +1103,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=6) esquerdo->btc_up[6]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='g';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='g';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1004,8 +1119,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=7) esquerdo->btc_up[7]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='h';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='h';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1015,8 +1135,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=8) esquerdo->btc_up[8]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='i';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='i';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1026,8 +1151,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=9) esquerdo->btc_up[9]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='j';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='j';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1037,8 +1167,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=10) esquerdo->btc_up[10]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='k';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='k';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1048,8 +1183,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=11) esquerdo->btc_up[11]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='l';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='l';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1059,8 +1199,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=12) esquerdo->btc_up[12]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='m';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='m';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1070,8 +1215,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=13) esquerdo->btc_up[13]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='n';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='n';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1081,8 +1231,13 @@ void hallwayUpButton(char *rx, char *tx, char n_seq_up, struct elevador *esquerd
         if (esquerdo->andar!=14) esquerdo->btc_up[14]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='c';tx[1]='L';tx[2]='o';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='c';tx[1]='L';tx[2]='o';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_up=0;                                                               //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1098,8 +1253,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=1) esquerdo->btc_down[0]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='b';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='b';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1109,8 +1269,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=2) esquerdo->btc_down[1]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='c';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='c';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1120,8 +1285,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=3) esquerdo->btc_down[2]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='d';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='d';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1131,8 +1301,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=4) esquerdo->btc_down[3]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='e';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='e';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1142,8 +1317,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=5) esquerdo->btc_down[4]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='f';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='f';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1153,8 +1333,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=6) esquerdo->btc_down[5]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='g';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='g';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1164,8 +1349,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=7) esquerdo->btc_down[6]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='h';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='h';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1175,8 +1365,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=8) esquerdo->btc_down[7]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='i';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='i';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1186,8 +1381,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=9) esquerdo->btc_down[8]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='j';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='j';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1197,8 +1397,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=10) esquerdo->btc_down[9]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='k';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='k';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1208,8 +1413,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=11) esquerdo->btc_down[10]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='l';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='l';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1219,8 +1429,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=12) esquerdo->btc_down[11]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='m';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='m';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1230,8 +1445,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=13) esquerdo->btc_down[12]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='n';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='n';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1241,8 +1461,13 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=14) esquerdo->btc_down[13]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='o';tx[3]='\r';Serial.write(tx,4);
-        
+        tx[0]='d';tx[1]='L';tx[2]='o';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
+
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
     }
@@ -1252,7 +1477,12 @@ void hallwayDownButton(char *rx, char *tx, char n_seq_down, struct elevador *esq
         if (esquerdo->andar!=15) esquerdo->btc_down[14]=1;                    //NÃ£o ascender botÃ£o no mesmo andar ...
         
         //Envia msg ascender luz do botÃ£o 0 central como DEBUG ...
-        tx[0]='d';tx[1]='L';tx[2]='p';tx[3]='\r';Serial.write(tx,4);
+        tx[0]='d';tx[1]='L';tx[2]='p';tx[3]='\r';
+        if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+        {
+            Serial.write(tx,4);
+            xSemaphoreGive(xSerialMutex);
+        }
         
         n_seq_down=0;                                                             //reset contadores de eventos ...
         zerar_serial();
