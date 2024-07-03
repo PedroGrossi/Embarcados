@@ -1,6 +1,6 @@
 /*#######################################################################
 Aluno = Pedro Henrique Grossi da Silva
-Data = 01/07/2024
+Data = 03/07/2024
 Desenvolvido para a placa Wemos LOLIN32 LITE utilizando Ambiente ARDUINO
 #######################################################################*/
 /* Biblioteca do Arduino */

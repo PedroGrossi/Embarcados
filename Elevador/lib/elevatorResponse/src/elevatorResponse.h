@@ -3,7 +3,7 @@ ElevatorResponse.h
 Desenvolvido para a placa WEMOS LOLIN32 LITE
 Funções para interpretar as respostas do
 simulador de elevador
-01/07/2024
+02/07/2024
 ###########################################*/
 #ifndef ELEVATORRESPONSE_H
 #define ELEVATORRESPONSE_H
