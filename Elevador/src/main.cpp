@@ -148,7 +148,7 @@ void loop()
   /* Atualiza o status da porta */
   doorStatus(rx, tx, &esquerdo, xSerialMutex);
 
-  vTaskDelay(pdMS_TO_TICKS(400));
+  vTaskDelay(pdMS_TO_TICKS(500));
 }
 
 /* vTask1 => inverte LED em intervalos de 200 ms  (Utilizando para verificar visualmente se o SO está funcionando)*/
@@ -180,7 +180,7 @@ void vElevatorFloor(void *pvParameters)
     /* Atualiza andar do elevador */
     floorVerify(rx, tx, n_btc_in, n_seq_up, &timerelevador, &esquerdo, xSerialMutex);
 
-    vTaskDelay(pdMS_TO_TICKS(50));
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
 }
 
