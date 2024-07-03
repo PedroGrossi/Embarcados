@@ -45,6 +45,9 @@ TaskHandle_t elevatorControllHandle = NULL;
 QueueHandle_t xFilaSubida;
 QueueHandle_t xFilaDecida;
 
+/* Variavel para Mutex => gatekeeper */
+SemaphoreHandle_t xSerialMutex;
+
 /* Protótipos das Tasks */
 void vTask1(void *pvParameters);
 void vElevatorFloor(void *pvParameters);
@@ -102,6 +105,14 @@ void setup()
     while(1);
   }
 
+  /* Criação do Mutex */
+  xSerialMutex  = xSemaphoreCreateMutex(); 
+  if (xFilaDecida == NULL)
+  {
+    Serial.println("Nao foi possível criar a fila de decida");
+    while(1);
+  }
+
   /* Criação das Tasks */
   xReturned = xTaskCreate(vTask1,"Task1",configMINIMAL_STACK_SIZE,NULL,1,&task1Handle);
   if (xReturned == pdFAIL)
@@ -133,11 +144,11 @@ void setup()
 void loop()
 {
   /* Verifica se o comando initialized foi recebido */
-  initialized(rx, tx, &esquerdo);
+  initialized(rx, tx, &esquerdo, xSerialMutex);
   /* Atualiza o status da porta */
-  doorStatus(rx, tx, &esquerdo);
+  doorStatus(rx, tx, &esquerdo, xSerialMutex);
 
-  vTaskDelay(pdMS_TO_TICKS(400));
+  vTaskDelay(pdMS_TO_TICKS(500));
 }
 
 /* vTask1 => inverte LED em intervalos de 200 ms  (Utilizando para verificar visualmente se o SO está funcionando)*/
@@ -167,9 +178,9 @@ void vElevatorFloor(void *pvParameters)
       rx[i]=last;
     }
     /* Atualiza andar do elevador */
-    floorVerify(rx, tx, n_btc_in, n_seq_up, &timerelevador, &esquerdo);
+    floorVerify(rx, tx, n_btc_in, n_seq_up, &timerelevador, &esquerdo, xSerialMutex);
 
-    vTaskDelay(pdMS_TO_TICKS(50));
+    vTaskDelay(pdMS_TO_TICKS(10));
   }
 }
 
@@ -180,11 +191,11 @@ void vElevatorResponse(void *pvParameters)
   while (1)
   {
     /* Atualiza se algum botão da cabine for pressionado */
-    cabinButton(rx, tx, n_btc_in, &esquerdo);
+    cabinButton(rx, tx, n_btc_in, &esquerdo, xSerialMutex);
 
     /* Atualiza se algum botão do corredor for pressionado */
-    hallwayUpButton(rx, tx, n_seq_down, &esquerdo);
-    hallwayDownButton(rx, tx, n_seq_down, &esquerdo);
+    hallwayUpButton(rx, tx, n_seq_down, &esquerdo, xSerialMutex);
+    hallwayDownButton(rx, tx, n_seq_down, &esquerdo, xSerialMutex);
 
     /* Adiciona andares na fila */
     for(i=0;i<16;i++)
@@ -325,7 +336,7 @@ void vElevatorControll(void *pvParameters)
           if(esquerdo.prox>esquerdo.andar)
           {
             while(millis()<timerelevador) vTaskDelay(pdMS_TO_TICKS(100));
-            controller(tx, &esquerdo);
+            controller(tx, &esquerdo, xSerialMutex);
           } 
           else
           {
@@ -352,7 +363,7 @@ void vElevatorControll(void *pvParameters)
           if(esquerdo.prox<esquerdo.andar)
           {
             while(millis()<timerelevador) vTaskDelay(pdMS_TO_TICKS(100));
-            controller(tx, &esquerdo);
+            controller(tx, &esquerdo, xSerialMutex);
           } 
           else
           {

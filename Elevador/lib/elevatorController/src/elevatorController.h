@@ -10,4 +10,4 @@ Função de controlador do elevador
 
 #include <stdint.h>
 
-void controller(char *tx, struct elevador *esquerdo);
+void controller(char *tx, struct elevador *esquerdo, SemaphoreHandle_t xSerialMutex);
