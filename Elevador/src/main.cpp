@@ -1,6 +1,6 @@
 /*##################################################################################
 Alunos = Gabriel Passos e Pedro Henrique Grossi da Silva
-Data = 03/07/2024
+Data = 04/07/2024
 Desenvolvido para a placa Wemos LOLIN32 LITE utilizando Ambiente ARDUINO / FreeRTOS
 ##################################################################################*/
 /* Biblioteca do Arduino */
@@ -25,6 +25,8 @@ struct elevador esquerdo;
 char rx[13],tx[4],last;
 /* contador genérico: */
 int i;
+/* contadores das filas */
+char numelefilaup, numelefiladown;
 /* flags de eventos: */
 char flagcabine,flagcorredorup,flagcorredordown;
 /* contadores de eventos: */
@@ -66,6 +68,8 @@ void setup()
   n_btc_in=0;
   n_seq_up=0;
   n_seq_down=0;
+  numelefilaup=0;
+  numelefiladown=0;
 
   /* Zerar elevador na inicialização */
   esquerdo.andar=0;
@@ -114,18 +118,13 @@ void setup()
   }
 
   /* Criação das Tasks */
+  /* Tasks criadas no core 0 */
   xReturned = xTaskCreate(vTask1,"Task1",configMINIMAL_STACK_SIZE,NULL,1,&task1Handle);
   if (xReturned == pdFAIL)
   {
     Serial.println("Não foi possível criar a Task 1!");
     while(1);
   }
-  xReturned = xTaskCreate(vElevatorFloor,"ElevatorFloorTask",configMINIMAL_STACK_SIZE,NULL,2,&elevatorFloorHandle);
-  if (xReturned == pdFAIL)
-  {
-    Serial.println("Não foi possível criar a ElevatorFloorTask!");
-    while(1);
-  } 
   xReturned = xTaskCreate(vElevatorResponse,"ElevatorResponseTask",configMINIMAL_STACK_SIZE,NULL,1,&elevatorResponseHandle);
   if (xReturned == pdFAIL)
   {
@@ -138,6 +137,13 @@ void setup()
     Serial.println("Não foi possível criar a ElevatorControllTask!");
     while(1);
   }
+  /* Task criada no core 1 */
+  xReturned = xTaskCreatePinnedToCore(vElevatorFloor,"ElevatorFloorTask",configMINIMAL_STACK_SIZE,NULL,1,&elevatorFloorHandle, 1);
+  if (xReturned == pdFAIL)
+  {
+    Serial.println("Não foi possível criar a ElevatorFloorTask!");
+    while(1);
+  } 
 }
 
 /* loop-Task0 => Inicializa o simulador + Verifia o status da porta */
@@ -203,11 +209,23 @@ void vElevatorResponse(void *pvParameters)
       if(esquerdo.btc_in[i])
       {
         /* Se o elevador estiver parado e o andar solicitado for abaixo => fila de decida */
-        if(esquerdo.estado=='P' && i<esquerdo.andar) xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+        if(esquerdo.estado=='P' && i<esquerdo.andar)
+        {
+          xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+          numelefiladown++;
+        }
         /* Se o elevador estiver parado e o andar solicitado for acima => fila de subida */
-        if(esquerdo.estado=='P' && i>esquerdo.andar) xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+        if(esquerdo.estado=='P' && i>esquerdo.andar) 
+        {
+          xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+          numelefilaup++;
+        }
         /* Se o elevador estiver subindo e o andar solicitado for abaixo ou o andar passante => fila de decida */
-        if(esquerdo.estado=='S' && i<esquerdo.andar) xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+        if(esquerdo.estado=='S' && i<esquerdo.andar)
+        {
+          xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+          numelefiladown++;
+        }
         /* Se o elevador estiver subindo e o andar solicitado for acima => fila de subida */
         if(esquerdo.estado=='S' && i>esquerdo.andar)
         {
@@ -219,16 +237,22 @@ void vElevatorResponse(void *pvParameters)
             i=esquerdo.prox;
             esquerdo.prox=aux;
             xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+            numelefilaup++;
             /* Retornando o i para o valor original*/
             i=aux;
           }
           else
           {
             xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+            numelefilaup++;
           }
         }
         /* Se o elevador estiver decendo e o andar solicitado for acima ou o andar passante => fila de subida */
-        if(esquerdo.estado=='D' && i>esquerdo.andar) xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+        if(esquerdo.estado=='D' && i>esquerdo.andar)
+        {
+          xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+          numelefilaup++;
+        }
         /* Se o elevador estiver decendo e o andar solicitado for abaixo => fila de decida */
         if(esquerdo.estado=='D' && i<esquerdo.andar)
         {
@@ -240,12 +264,14 @@ void vElevatorResponse(void *pvParameters)
             i=esquerdo.prox;
             esquerdo.prox=aux;
             xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+            numelefiladown++;
             /* Retornando o i para o valor original*/
             i=aux;
           }
           else
           {
             xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+            numelefiladown++;
           }
         }
         esquerdo.btc_in[i]=0;
@@ -266,17 +292,20 @@ void vElevatorResponse(void *pvParameters)
             i=esquerdo.prox;
             esquerdo.prox=aux;
             xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+            numelefilaup++;
             /* Retornando o i para o valor original*/
             i=aux;
           }
           else
           {
             xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+            numelefilaup++;
           }
         }
         else
         {
           xQueueSend(xFilaSubida, &i,portMAX_DELAY);
+          numelefilaup++;
         }
         esquerdo.btc_up[i]=0;
       }
@@ -297,17 +326,20 @@ void vElevatorResponse(void *pvParameters)
             i=esquerdo.prox;
             esquerdo.prox=aux;
             xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+            numelefiladown++;
             /* Retornando o i para o valor original*/
             i=aux;
           }
           else
           {
             xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+            numelefiladown++;
           }
         }
         else
         {
           xQueueSend(xFilaDecida, &i,portMAX_DELAY);
+          numelefiladown++;
         }
         i--;
         esquerdo.btc_down[i]=0;
@@ -336,8 +368,18 @@ void vElevatorControll(void *pvParameters)
           if(esquerdo.prox>esquerdo.andar)
           {
             while(millis()<timerelevador) vTaskDelay(pdMS_TO_TICKS(100));
+            /* Apenas se utilizar o elemento contabiliza que removeu da fila */
+            numelefilaup--;
             controller(tx, &esquerdo, xSerialMutex);
-          } 
+          }
+          /* Caso não possua elementos na fila de decida, atender a fila de subida */
+          else if(numelefiladown==0)
+          {
+            while(millis()<timerelevador) vTaskDelay(pdMS_TO_TICKS(100));
+            /* Apenas se utilizar o elemento contabiliza que removeu da fila */
+            numelefilaup--;
+            controller(tx, &esquerdo, xSerialMutex);
+          }
           else
           {
             /* Devolve o elemento para a fila */
@@ -363,8 +405,18 @@ void vElevatorControll(void *pvParameters)
           if(esquerdo.prox<esquerdo.andar)
           {
             while(millis()<timerelevador) vTaskDelay(pdMS_TO_TICKS(100));
+            /* Apenas se utilizar o elemento contabiliza que removeu da fila */
+            numelefiladown--;
             controller(tx, &esquerdo, xSerialMutex);
-          } 
+          }
+          /* Caso não possua elementos na fila de subida, atender a fila de decida */
+          else if(numelefilaup==0)
+          {
+            while(millis()<timerelevador) vTaskDelay(pdMS_TO_TICKS(100));
+            /* Apenas se utilizar o elemento contabiliza que removeu da fila */
+            numelefiladown--;
+            controller(tx, &esquerdo, xSerialMutex);
+          }
           else
           {
             /* Devolve o elemento para a fila */
