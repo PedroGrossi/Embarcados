@@ -179,7 +179,11 @@ void vElevatorFloor(void *pvParameters)
     /* Verifica se existe algum byte na porta serial, caso exista rotaciona buffer e inclui o ultimo byte recebido. */
     if (Serial.available()>=1)
     {
-      last=Serial.read();
+      if(xSemaphoreTake(xSerialMutex, portMAX_DELAY) == pdTRUE)
+      {
+          last=Serial.read();
+          xSemaphoreGive(xSerialMutex);
+      }
       for (i=0;i<12;i++) rx[i]=rx[i+1];
       rx[i]=last;
     }
