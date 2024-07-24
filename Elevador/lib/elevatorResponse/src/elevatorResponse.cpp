@@ -2,6 +2,11 @@
 Aluno = Pedro Henrique Grossi da Silva
 Data = 03/07/2024
 Desenvolvido para a placa Wemos LOLIN32 LITE utilizando Ambiente ARDUINO
+
+OBS: Grande parte do código dessa lib foi desenvolvido pelo professor da 
+disciplina, eu adaptei as funções para funcionar com o meu código. Por 
+uma questão de tempo de entrega do projeto, não tive tempo de refatorar
+a repetição de código.
 #######################################################################*/
 /* Biblioteca do Arduino */
 #include <Arduino.h>
